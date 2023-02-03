@@ -5,7 +5,6 @@ from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 
 from django_extra.core.api_exceptions import BadRequest
-from django_extra.settings import app_settings
 from django_extra.utility import date_util
 from django_extra.utility.date_util import now
 
@@ -155,9 +154,9 @@ def validate_2_decimal(value):
     return True
 
 
-def validate_file_size(value):
-    if value.size > app_settings.DATA_UPLOAD_MAX_MEMORY_SIZE:
-        raise BadRequest({"messgae": "File too large. Size should not exceed 10 MB."})
+def validate_file_size(value, size):
+    if value.size > size:
+        raise BadRequest({"message": "File too large. Size should not exceed 10 MB."})
     return True
 
 

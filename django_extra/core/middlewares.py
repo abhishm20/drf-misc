@@ -3,10 +3,7 @@ from __future__ import absolute_import, unicode_literals
 
 import inspect
 
-from django.http import HttpResponseForbidden
 from django.utils.deprecation import MiddlewareMixin
-
-from django_extra.settings import app_settings
 
 # pylint: disable=inconsistent-return-statements
 
@@ -39,28 +36,3 @@ class AuthTokenHandler(MiddlewareMixin):
             request.COOKIES.update({"sessionid": header_session})
         if query_session:
             request.COOKIES.update({"sessionid": query_session})
-
-
-class AppNameMiddleware(MiddlewareMixin):
-    def process_request(self, request):
-        if not app_settings.APP_NAMES:
-            return
-        if request.GET.get("app-name"):
-            request.META["HTTP_X_APP_NAME"] = request.GET.get("x-app-name")
-
-        request.app_name = request.META.get("HTTP_X_APP_NAME")
-
-        if (
-            not request.app_name
-            and "/admin" not in request.get_full_path()
-            and "/callbacks/" not in request.get_full_path()
-            and "/status" not in request.get_full_path()
-        ):
-            return HttpResponseForbidden("x-app-name header is required")
-
-        user = request.user
-
-        if user.is_authenticated:
-            if request.app_name not in app_settings.APP_NAMES:
-                return HttpResponseForbidden("x-app-name header is invalid")
-        return
