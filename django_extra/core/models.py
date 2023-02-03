@@ -10,8 +10,8 @@ from django.db import models
 
 
 class _DateTimeStampingModel(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    updated_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.CharField(max_length=32, null=True, default=None)
+    updated_at = models.DateTimeField(max_length=32, null=True, default=None)
 
     class Meta:
         abstract = True
