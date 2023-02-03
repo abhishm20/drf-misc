@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 
+import time
 import uuid
 
 from django.db import models
-
-from django_extra import utility
 
 # pylint: disable=no-member
 
@@ -19,8 +18,8 @@ class _DateTimeStampingModel(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.id:
-            self.created_at = utility.now()
-        self.updated_at = utility.now()
+            self.created_at = time.time()
+        self.updated_at = time.time()
         super().save(*args, **kwargs)
 
 
