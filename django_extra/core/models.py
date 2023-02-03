@@ -18,8 +18,8 @@ class _DateTimeStampingModel(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.id:
-            self.created_at = time.time()
-        self.updated_at = time.time()
+            self.created_at = int(time.time())
+        self.updated_at = int(time.time())
         super().save(*args, **kwargs)
 
 
