@@ -11,7 +11,7 @@ from django.db import models
 
 class _DateTimeStampingModel(models.Model):
     created_at = models.CharField(max_length=32, null=True, default=None)
-    updated_at = models.DateTimeField(max_length=32, null=True, default=None)
+    updated_at = models.CharField(max_length=32, null=True, default=None)
 
     class Meta:
         abstract = True
