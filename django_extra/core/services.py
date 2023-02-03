@@ -2,8 +2,9 @@
 from __future__ import absolute_import, unicode_literals
 
 from django.db import transaction
+from django.shortcuts import get_object_or_404
 
-from django_extra.custom.cache import CustomCache
+from django_extra.core.cache import CustomCache
 from django_extra.settings import app_settings
 
 # pylint: disable=not-callable
@@ -13,8 +14,9 @@ class BaseService:
     serializer = None
     model = None
 
-    def __init__(self, instance=None):
-        self.instance = instance
+    def __init__(self, instance_id=None):
+        if instance_id:
+            self.instance = get_object_or_404(self.model, id=instance_id)
 
     def create(self, data):
         with transaction.atomic():

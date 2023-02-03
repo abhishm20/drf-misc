@@ -8,9 +8,9 @@ from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
-from django_extra.custom.api_exceptions import BadRequest
-from django_extra.custom.cache import CustomCache
-from django_extra.custom.filter_backend import FlexFieldsFilterBackend
+from django_extra.core.api_exceptions import BadRequest
+from django_extra.core.cache import CustomCache
+from django_extra.core.filter_backend import FlexFieldsFilterBackend
 
 # pylint: disable=unused-argument,no-member, protected-access
 
@@ -104,7 +104,7 @@ class DestroyMM(RelationalGenericViewSet):
 
     def perform_destroy(self, instance):
         if hasattr(self, "service_class") and self.service_class:
-            self.service_class(instance).delete()
+            self.service_class(instance.id).delete()
         else:
             instance.delete()
 
@@ -186,7 +186,7 @@ class UpdateMM(RelationalGenericViewSet):
         partial = kwargs.pop("partial", False)
         instance = self.get_object()
         if hasattr(self, "service_class") and self.service_class:
-            instance = self.service_class(instance).update(
+            instance = self.service_class(instance.id).update(
                 request.data, partial=partial
             )
             serializer = self.get_serializer(instance)

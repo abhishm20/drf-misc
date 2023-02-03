@@ -75,20 +75,6 @@ def make_name_value_pair(set_list):
     return [{"name": x[1], "value": x[0]} for x in set_list]
 
 
-def sort_days():
-    days_name = [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-        "Sunday",
-    ]
-    days_index = {name: val for val, name in enumerate(days_name)}
-    return days_index
-
-
 def flatten_object(obj):
     new_obj = {}
     for key in obj.keys():

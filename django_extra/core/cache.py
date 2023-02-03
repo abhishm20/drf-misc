@@ -2,7 +2,7 @@
 
 from django.core.cache import cache
 
-from django_extra.custom.api_exceptions import ServerError
+from django_extra.core.api_exceptions import ServerError
 from django_extra.settings import app_settings
 
 

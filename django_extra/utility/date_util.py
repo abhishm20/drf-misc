@@ -150,3 +150,17 @@ def calculate_age(dob):
 def unix_to_timestamp(uts):
     _ts = int(uts)
     return datetime.utcfromtimestamp(_ts)
+
+
+def sort_days():
+    days_name = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+    ]
+    days_index = {name: val for val, name in enumerate(days_name)}
+    return days_index

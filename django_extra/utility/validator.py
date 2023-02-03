@@ -4,7 +4,7 @@ import re
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 
-from django_extra.custom.api_exceptions import BadRequest
+from django_extra.core.api_exceptions import BadRequest
 from django_extra.settings import app_settings
 from django_extra.utility import date_util
 from django_extra.utility.date_util import now
