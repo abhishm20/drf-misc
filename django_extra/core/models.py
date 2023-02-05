@@ -2,7 +2,6 @@
 from __future__ import absolute_import, unicode_literals
 
 import time
-import uuid
 
 from django.db import models
 
@@ -24,9 +23,7 @@ class _DateTimeStampingModel(models.Model):
 
 
 class AbstractModel(_DateTimeStampingModel):
-    id = models.CharField(
-        default=uuid.uuid4, editable=False, unique=True, primary_key=True, max_length=50
-    )
+    id = models.CharField(editable=False, unique=True, primary_key=True, max_length=50)
 
     class Meta:
         abstract = True
