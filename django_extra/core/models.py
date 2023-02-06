@@ -2,10 +2,11 @@
 from __future__ import absolute_import, unicode_literals
 
 import time
+import uuid
 
 from django.db import models
 
-# pylint: disable=no-member
+# pylint: disable=no-member,access-member-before-definition,invalid-name
 
 
 class _DateTimeStampingModel(models.Model):
@@ -17,13 +18,14 @@ class _DateTimeStampingModel(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.id:
+            self.id = str(uuid.uuid4())
             self.created_at = int(time.time())
         self.updated_at = int(time.time())
         super().save(*args, **kwargs)
 
 
 class AbstractModel(_DateTimeStampingModel):
-    id = models.CharField(editable=False, unique=True, primary_key=True, max_length=50)
+    id = models.CharField(editable=False, unique=True, primary_key=True, max_length=32)
 
     class Meta:
         abstract = True
