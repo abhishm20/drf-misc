@@ -25,7 +25,7 @@ class _DateTimeStampingModel(models.Model):
 
 
 class AbstractModel(_DateTimeStampingModel):
-    id = models.CharField(editable=False, unique=True, primary_key=True, max_length=32)
+    id = models.CharField(editable=False, unique=True, primary_key=True, max_length=36)
 
     class Meta:
         abstract = True
