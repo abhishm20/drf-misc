@@ -3,6 +3,7 @@ from __future__ import absolute_import, unicode_literals
 
 import inspect
 
+import jwt
 from django.utils.deprecation import MiddlewareMixin
 
 # pylint: disable=inconsistent-return-statements
@@ -36,3 +37,13 @@ class AuthTokenHandler(MiddlewareMixin):
             request.COOKIES.update({"sessionid": header_session})
         if query_session:
             request.COOKIES.update({"sessionid": query_session})
+
+
+class AuthCheckMiddleware(MiddlewareMixin):
+    def process_request(self, request):
+        token = request.META.get("HTTP_AUTHORIZATION")
+        valid_data = {}
+        if token:
+            token = token.replace("Bearer ", "")
+            valid_data = jwt.decode(token, options={"verify_signature": False})
+        request._user = valid_data
