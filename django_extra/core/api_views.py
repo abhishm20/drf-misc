@@ -115,6 +115,7 @@ class CreateMM(RelationalGenericViewSet):
     """
 
     def create(self, request, **kwargs):
+        self.make_request_mutable(request)
         if hasattr(self, "service_class") and self.service_class:
             instance = self.service_class().create(request.data)
             serializer = self.get_serializer(instance)
@@ -183,6 +184,7 @@ class UpdateMM(RelationalGenericViewSet):
     """
 
     def update(self, request, *args, **kwargs):
+        self.make_request_mutable(request)
         partial = kwargs.pop("partial", False)
         instance = self.get_object()
         if hasattr(self, "service_class") and self.service_class:
