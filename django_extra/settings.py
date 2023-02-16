@@ -11,11 +11,15 @@ class AppSettings:
     @property
     def SERVICE_NAME(self):
         """Control how many times a task will be attempted."""
-        return getattr(self.app_settings, "SERVICE_NAME", "django_extra")
+        return self.app_settings.get("SERVICE_NAME", "django_extra")
 
     @property
     def USE_SERVICE_CACHE(self):
-        return getattr(self.app_settings, "USE_SERVICE_CACHE", False)
+        return self.app_settings.get("USE_SERVICE_CACHE", False)
+
+    @property
+    def AUTH_CHECK_DISABLED_PATHS(self):
+        return self.app_settings.get("AUTH_CHECK_DISABLED_PATHS", [])
 
 
 app_settings = AppSettings()

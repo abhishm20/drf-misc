@@ -6,6 +6,8 @@ import inspect
 import jwt
 from django.utils.deprecation import MiddlewareMixin
 
+from django_extra.settings import app_settings
+
 # pylint: disable=inconsistent-return-statements
 
 
@@ -41,9 +43,12 @@ class AuthTokenHandler(MiddlewareMixin):
 
 class AuthCheckMiddleware(MiddlewareMixin):
     def process_request(self, request):
+        for path in app_settings.AUTH_CHECK_DISABLED_PATHS:
+            if path in request.build_absolute_uri():
+                return
         token = request.META.get("HTTP_AUTHORIZATION")
         valid_data = {}
         if token:
             token = token.replace("Bearer ", "")
             valid_data = jwt.decode(token, options={"verify_signature": False})
-        request._user = valid_data
+        request.auth_user = valid_data
