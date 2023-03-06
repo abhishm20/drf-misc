@@ -12,11 +12,15 @@ from django_extra.settings import app_settings
 
 class BaseService:
     serializer = None
+    cache_serializer = None
     model = None
 
     def __init__(self, instance_id=None):
         if instance_id:
             self.instance = get_object_or_404(self.model, id=instance_id)
+
+    def _get_cache_key(self):
+        return f"{app_settings.SERVICE_NAME}:{self.instance.__class__.__name__.lower()}:{self.instance.id}"
 
     def create(self, data):
         with transaction.atomic():
@@ -24,13 +28,15 @@ class BaseService:
             ser.is_valid(raise_exception=True)
             ser.save()
             self.instance = ser.instance
-            if app_settings.USE_SERVICE_CACHE:
-                CustomCache(instance=self.instance).set(ser.data)
+            if app_settings.USE_SERVICE_CACHE and self.cache_serializer:
+                CustomCache(self._get_cache_key()).set(
+                    self.cache_serializer(self.instance).data
+                )
             return self.instance
 
     def delete(self):
-        if app_settings.USE_SERVICE_CACHE:
-            CustomCache(instance=self.instance).delete()
+        if app_settings.USE_SERVICE_CACHE and self.cache_serializer:
+            CustomCache(self._get_cache_key()).delete()
         self.instance.delete()
 
     def update(self, data, partial=True):
@@ -39,6 +45,8 @@ class BaseService:
             ser.is_valid(raise_exception=True)
             ser.save()
             self.instance = ser.instance
-            if app_settings.USE_SERVICE_CACHE:
-                CustomCache(instance=self.instance).set(ser.data)
+            if app_settings.USE_SERVICE_CACHE and self.cache_serializer:
+                CustomCache(self._get_cache_key()).set(
+                    self.cache_serializer(self.instance).data
+                )
             return self.instance
