@@ -9,7 +9,6 @@ from rest_framework.settings import api_settings
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from django_extra.core.api_exceptions import BadRequest
-from django_extra.core.cache import CustomCache
 from django_extra.core.filter_backend import FlexFieldsFilterBackend
 
 # pylint: disable=unused-argument,no-member, protected-access
@@ -168,11 +167,6 @@ class RetrieveMM(RelationalGenericViewSet):
     """
 
     def retrieve(self, request, *args, **kwargs):
-        class_name = self.serializer_class.Meta.model.__name__
-        _pk = kwargs.get("pk")
-        data = CustomCache(model=class_name, _pk=_pk).get()
-        if data:
-            return Response(data)
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
