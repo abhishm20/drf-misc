@@ -4,7 +4,7 @@ from django.core.cache import cache
 
 
 class CustomCache:
-    def __init__(self, key=None, duration=60):
+    def __init__(self, key=None, duration=-1):
         self.key = key
         self.duration = duration
 
