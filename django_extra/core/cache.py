@@ -4,9 +4,8 @@ from django.core.cache import cache
 
 
 class CustomCache:
-    def __init__(self, key=None, duration=-1):
+    def __init__(self, key=None):
         self.key = key
-        self.duration = duration
 
     def get(self):
         value = cache.get(self.key)
@@ -16,5 +15,5 @@ class CustomCache:
         cache.delete(self.key)
 
     def set(self, value):
-        value = cache.set(self.key, value, self.duration)
+        value = cache.set(self.key, value)
         return value
