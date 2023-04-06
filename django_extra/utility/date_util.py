@@ -17,7 +17,7 @@ def now(datetime_str=None):
 
 
 def append_current_time(date_part):
-    if isinstance(date_part) == str:
+    if isinstance(date_part, str):
         date_part = now(date_part)
     time_part = now()
     complete_part = datetime(
