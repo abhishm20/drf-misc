@@ -98,7 +98,7 @@ class RelationalGenericViewSet(
 class DestroyMM(RelationalGenericViewSet):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        self.perform_destroy(request,instance)
+        self.perform_destroy(instance, request)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def perform_destroy(self, request, instance):

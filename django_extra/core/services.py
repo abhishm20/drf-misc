@@ -43,7 +43,7 @@ class BaseService:
                     action="create")
             return self.instance
     
-    def delete(self, request=dict):
+    def delete(self, request):
         if app_settings.USE_SERVICE_CACHE and self.cache_serializer:
             CustomCache(self.get_cache_key()).delete()
         self.instance.delete()
