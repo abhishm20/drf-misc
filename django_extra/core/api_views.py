@@ -98,12 +98,12 @@ class RelationalGenericViewSet(
 class DestroyMM(RelationalGenericViewSet):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        self.perform_destroy(instance)
+        self.perform_destroy(instance, request)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def perform_destroy(self, instance):
+    def perform_destroy(self, request, instance):
         if hasattr(self, "service_class") and self.service_class:
-            self.service_class(instance.id).delete()
+            self.service_class(instance.id).delete(request=request)
         else:
             instance.delete()
 
@@ -116,7 +116,7 @@ class CreateMM(RelationalGenericViewSet):
     def create(self, request, **kwargs):
         self.make_request_mutable(request)
         if hasattr(self, "service_class") and self.service_class:
-            instance = self.service_class().create(request.data)
+            instance = self.service_class().create(request.data, request=request)
             serializer = self.get_serializer(instance)
         else:
             serializer = self.get_serializer(data=request.data)
@@ -183,7 +183,7 @@ class UpdateMM(RelationalGenericViewSet):
         instance = self.get_object()
         if hasattr(self, "service_class") and self.service_class:
             instance = self.service_class(instance.id).update(
-                request.data, partial=partial
+                request.data, request=request, partial=partial
             )
             serializer = self.get_serializer(instance)
         else:
