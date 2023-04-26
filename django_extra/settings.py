@@ -9,22 +9,22 @@ class AppSettings:
         self.app_settings = getattr(settings, "DJANGO_EXTRA_SETTINGS", {})
 
     @property
-    def SERVICE_NAME(self):
+    def service_name(self):
         """Control how many times a task will be attempted."""
-        return self.app_settings.get("SERVICE_NAME", "django_extra")
+        return self.app_settings.get("service_name", "django_extra")
 
     @property
-    def AUDIT_QUEUE_URL(self):
+    def audit_queue_url(self):
         """Control how many times a task will be attempted."""
-        return self.app_settings.get("AUDIT_QUEUE_URL", {})
+        return self.app_settings.get("audit_queue_url", {})
 
     @property
-    def USE_SERVICE_CACHE(self):
-        return self.app_settings.get("USE_SERVICE_CACHE", False)
+    def use_service_cache(self):
+        return self.app_settings.get("use_service_cache", False)
 
     @property
-    def AUTH_CHECK_DISABLED_PATHS(self):
-        return self.app_settings.get("AUTH_CHECK_DISABLED_PATHS", [])
+    def auth_check_disabled_paths(self):
+        return self.app_settings.get("auth_check_disabled_paths", [])
 
 
 app_settings = AppSettings()
