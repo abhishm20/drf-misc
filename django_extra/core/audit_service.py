@@ -22,7 +22,8 @@ class AuditService:
             "entity": entity,
             "remark": remark,
         }
-        self._push_to_queue(body, request)
+        if request:
+            self._push_to_queue(body, request)
     
     def _push_to_queue(self, body, request):
         body['headers'] = {
