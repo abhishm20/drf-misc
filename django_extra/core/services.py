@@ -23,7 +23,7 @@ class BaseService:
     def get_cache_key(self):
         return f"{app_settings.service_name}:{self.instance.__class__.__name__.lower()}:{self.instance.id}"
     
-    def create(self, data, request=dict, is_critical=True):
+    def create(self, data, action="create", request=dict, is_critical=True):
         with transaction.atomic():
             ser = self.serializer(data=data)
             ser.is_valid(raise_exception=True)
@@ -37,7 +37,7 @@ class BaseService:
             if self.audit_enable:
                 entity = self.get_entity_data()
                 AuditService().send_event(
-                    "create",
+                    action,
                     entity,
                     data,
                     request,
@@ -45,20 +45,20 @@ class BaseService:
                 )
             return self.instance
     
-    def delete(self, request=dict, is_critical=True):
+    def delete(self, action="delete", request=dict, is_critical=True):
         if app_settings.use_service_cache and self.cache_serializer:
             CustomCache(self.get_cache_key()).delete()
         if self.audit_enable:
             entity = self.get_entity_data()
             AuditService().send_event(
-                "delete",
+                action,
                 entity,
                 self.serializer(self.instance).data,
                 request,
                 is_critical=is_critical)
         self.instance.delete()
     
-    def update(self, data, request=dict, partial=True, is_critical=False):
+    def update(self, data, action="update", request=dict, partial=True, is_critical=False):
         with transaction.atomic():
             ser = self.serializer(self.instance, data, partial=partial)
             ser.is_valid(raise_exception=True)
@@ -69,7 +69,7 @@ class BaseService:
             if self.audit_enable:
                 entity = self.get_entity_data()
                 AuditService().send_event(
-                    "update",
+                    action,
                     entity,
                     data,
                     request,
