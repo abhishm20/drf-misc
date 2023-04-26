@@ -15,7 +15,7 @@ class AWSApi:
     def send_message(self, inserted, request=dict, remark="", action="", data=""):
         body = {
             "is_critical": True,
-            "timestamp":str(time.time()),
+            "timestamp":str(int(time.time())),
             "action": action,
             "data": data,
             "meta": {
