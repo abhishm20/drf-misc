@@ -25,7 +25,7 @@ class AuditService:
         self._push_to_queue(body, request)
     
     def _push_to_queue(self, body, request):
-        body['meta'] = {
+        body['header'] = {
             'auth_token': request.META.get('HTTP_AUTHORIZATION'),
             'source_ip': request.META.get('REMOTE_ADDR'),
             'user_agent': request.META.get('HTTP_USER_AGENT')
