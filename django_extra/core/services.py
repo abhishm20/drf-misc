@@ -34,7 +34,7 @@ class BaseService:
                     self.cache_serializer(self.instance).data
                 )
             
-            if self.audit_enable:
+            if self.audit_enable and request:
                 entity = self.get_entity_data()
                 AuditService().send_event(
                     action,
@@ -48,7 +48,7 @@ class BaseService:
     def delete(self, action="delete", request=dict, is_critical=True):
         if app_settings.use_service_cache and self.cache_serializer:
             CustomCache(self.get_cache_key()).delete()
-        if self.audit_enable:
+        if self.audit_enable and request:
             entity = self.get_entity_data()
             AuditService().send_event(
                 action,
@@ -66,7 +66,7 @@ class BaseService:
             self.instance = ser.instance
             if app_settings.use_service_cache and self.cache_serializer:
                 CustomCache(self.get_cache_key()).set(self.cache_serializer(self.instance).data)
-            if self.audit_enable:
+            if self.audit_enable and request:
                 entity = self.get_entity_data()
                 AuditService().send_event(
                     action,
