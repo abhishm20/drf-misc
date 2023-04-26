@@ -14,9 +14,9 @@ class AppSettings:
         return self.app_settings.get("SERVICE_NAME", "django_extra")
 
     @property
-    def CONFIG_SECRET(self):
+    def AUDIT_QUEUE_URL(self):
         """Control how many times a task will be attempted."""
-        return self.app_settings.get("CONFIG_SECRET", {})
+        return self.app_settings.get("AUDIT_QUEUE_URL", {})
 
     @property
     def USE_SERVICE_CACHE(self):
