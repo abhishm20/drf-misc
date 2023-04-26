@@ -31,7 +31,7 @@ class AuditService:
             'user_agent': request.META.get('HTTP_USER_AGENT')
         }
         return self.client.send_message(
-            QueueUrl=app_settings.AUDIT_QUEUE_URL,
+            QueueUrl=app_settings.audit_queue_url,
             MessageBody=json.dumps(body),
-            MessageGroupId=app_settings.SERVICE_NAME,
+            MessageGroupId=app_settings.service_name,
         )

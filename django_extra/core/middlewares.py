@@ -43,7 +43,7 @@ class AuthTokenHandler(MiddlewareMixin):
 
 class AuthCheckMiddleware(MiddlewareMixin):
     def process_request(self, request):
-        for path in app_settings.AUTH_CHECK_DISABLED_PATHS:
+        for path in app_settings.auth_check_disabled_paths:
             if path in request.build_absolute_uri():
                 return
         token = request.META.get("HTTP_AUTHORIZATION")

@@ -21,7 +21,7 @@ class BaseService:
             self.instance = get_object_or_404(self.model, id=instance_id)
     
     def get_cache_key(self):
-        return f"{app_settings.SERVICE_NAME}:{self.instance.__class__.__name__.lower()}:{self.instance.id}"
+        return f"{app_settings.service_name}:{self.instance.__class__.__name__.lower()}:{self.instance.id}"
     
     def create(self, data, request=dict, is_critical=True):
         with transaction.atomic():
@@ -29,7 +29,7 @@ class BaseService:
             ser.is_valid(raise_exception=True)
             ser.save()
             self.instance = ser.instance
-            if app_settings.USE_SERVICE_CACHE and self.cache_serializer:
+            if app_settings.use_service_cache and self.cache_serializer:
                 CustomCache(self.get_cache_key()).set(
                     self.cache_serializer(self.instance).data
                 )
@@ -46,7 +46,7 @@ class BaseService:
             return self.instance
     
     def delete(self, request=dict, is_critical=True):
-        if app_settings.USE_SERVICE_CACHE and self.cache_serializer:
+        if app_settings.use_service_cache and self.cache_serializer:
             CustomCache(self.get_cache_key()).delete()
         if self.audit_enable:
             entity = self.get_entity_data()
@@ -64,7 +64,7 @@ class BaseService:
             ser.is_valid(raise_exception=True)
             ser.save()
             self.instance = ser.instance
-            if app_settings.USE_SERVICE_CACHE and self.cache_serializer:
+            if app_settings.use_service_cache and self.cache_serializer:
                 CustomCache(self.get_cache_key()).set(self.cache_serializer(self.instance).data)
             if self.audit_enable:
                 entity = self.get_entity_data()
