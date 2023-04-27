@@ -4,8 +4,9 @@ import os
 import time
 import boto3
 from django_extra.settings import app_settings
-from django.conf.settings import logging
+from django.conf import settings
 
+app_logger = getattr(settings, 'app_logger', None)
 
 class AuditService:
     def __init__(self):
@@ -36,6 +37,7 @@ class AuditService:
             MessageBody=json.dumps(body),
             MessageGroupId=app_settings.service_name,
         )
-        logging.info("Event push to Audit SQS: payload: %s, response: %s", body, res)
+        if app_logger:
+            app_logger.info("Event push to Audit SQS: payload: %s, response: %s", body, res)
         return res
         
