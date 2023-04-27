@@ -13,9 +13,9 @@ class AuditService:
             region_name=os.getenv("AWS_REGION", "ap-south-1"),
         )
     
-    def send_event(self, action, entity, data, request, is_critical=False, remark=None):
+    def send_event(self, action, entity, data, request, level="trace", remark=""):
         body = {
-            "is_critical": is_critical,
+            "is_critical": level,
             "timestamp": str(int(time.time())),
             "action": action,
             "data": data,
