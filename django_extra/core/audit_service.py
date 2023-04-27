@@ -15,7 +15,7 @@ class AuditService:
     
     def send_event(self, action, entity, data, request, level="trace", remark=""):
         body = {
-            "is_critical": level,
+            "level": level,
             "timestamp": str(int(time.time())),
             "action": action,
             "data": data,
