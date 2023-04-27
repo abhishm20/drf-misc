@@ -4,6 +4,7 @@ import os
 import time
 import boto3
 from django_extra.settings import app_settings
+from django.conf.settings import logging
 
 
 class AuditService:
@@ -30,8 +31,11 @@ class AuditService:
             'source_ip': request.META.get('REMOTE_ADDR'),
             'user_agent': request.META.get('HTTP_USER_AGENT')
         }
-        return self.client.send_message(
+        res =  self.client.send_message(
             QueueUrl=app_settings.audit_queue_url,
             MessageBody=json.dumps(body),
             MessageGroupId=app_settings.service_name,
         )
+        logging.info("Event push to Audit SQS: payload: %s, response: %s", body, res)
+        return res
+        
