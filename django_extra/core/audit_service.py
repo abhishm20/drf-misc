@@ -5,9 +5,9 @@ import time
 import boto3
 from django_extra.settings import app_settings
 from django.conf import settings
-
+from django.core.files.uploadedfile import InMemoryUploadedFile
 app_logger = getattr(settings, 'app_logger', None)
-
+import copy
 class AuditService:
     def __init__(self):
         self.client = boto3.client(
@@ -16,6 +16,9 @@ class AuditService:
         )
     
     def send_event(self, action, entity, data, request, level="trace", remark=""):
+        for key in copy.deepcopy(data):
+            if isinstance(data[key], InMemoryUploadedFile):
+                del data[key]
         body = {
             "level": level,
             "timestamp": str(int(time.time())),
