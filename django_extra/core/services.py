@@ -23,7 +23,7 @@ class BaseService:
     def get_cache_key(self):
         return f"{app_settings.service_name}:{self.instance.__class__.__name__.lower()}:{self.instance.id}"
     
-    def create(self, data, action="created", request=dict, level="trace", remark=""):
+    def create(self, data, action="created", request=None, level="trace", remark=""):
         with transaction.atomic():
             ser = self.serializer(data=data)
             ser.is_valid(raise_exception=True)
@@ -46,7 +46,7 @@ class BaseService:
                 )
             return self.instance
     
-    def delete(self, action="deleted", request=dict, level="trace", remark=""):
+    def delete(self, action="deleted", request=None, level="trace", remark=""):
         if app_settings.use_service_cache and self.cache_serializer:
             CustomCache(self.get_cache_key()).delete()
         if self.audit_enable and request:
@@ -60,7 +60,7 @@ class BaseService:
                 remark=remark)
         self.instance.delete()
     
-    def update(self, data, action="updated", request=dict, partial=True, level="trace", remark=""):
+    def update(self, data, action="updated", request=None, partial=True, level="trace", remark=""):
         with transaction.atomic():
             ser = self.serializer(self.instance, data, partial=partial)
             ser.is_valid(raise_exception=True)
