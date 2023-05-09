@@ -31,9 +31,9 @@ class AuditService:
     
     def _push_to_queue(self, body, request):
         body['headers'] = {
-            'auth_token': request.META.get('HTTP_AUTHORIZATION'),
-            'source_ip': request.META.get('REMOTE_ADDR'),
-            'user_agent': request.META.get('HTTP_USER_AGENT')
+            'auth_token': request.META.get('HTTP_AUTHORIZATION') if request else "System",
+            'source_ip': request.META.get('REMOTE_ADDR') if request else "System",
+            'user_agent': request.META.get('HTTP_USER_AGENT') if request else "System"
         }
         res =  self.client.send_message(
             QueueUrl=app_settings.audit_queue_url,
