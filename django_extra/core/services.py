@@ -49,7 +49,7 @@ class BaseService:
     def delete(self, action="deleted", request=None, level="trace", remark=""):
         if app_settings.use_service_cache and self.cache_serializer:
             CustomCache(self.get_cache_key()).delete()
-        if self.audit_enable and request:
+        if self.audit_enable:
             entity = self.get_entity_data()
             AuditService().send_event(
                 action,
