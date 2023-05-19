@@ -2,7 +2,7 @@
 from __future__ import absolute_import, unicode_literals
 
 from datetime import date, datetime, timedelta
-
+import time
 from django.utils import timezone
 
 
@@ -164,3 +164,7 @@ def sort_days():
     ]
     days_index = {name: val for val, name in enumerate(days_name)}
     return days_index
+
+
+def timestamp_to_unix(date_var):
+    return str(int(time.mktime(date_var.timetuple())))
