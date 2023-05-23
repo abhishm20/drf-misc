@@ -3,7 +3,6 @@ from __future__ import absolute_import, unicode_literals
 
 import time
 import uuid
-
 from django.db import models
 
 # pylint: disable=no-member,access-member-before-definition,invalid-name
@@ -22,6 +21,36 @@ class _DateTimeStampingModel(models.Model):
             self.created_at = int(time.time())
         self.updated_at = int(time.time())
         super().save(*args, **kwargs)
+
+
+class AllInstanceManager(models.Manager):
+    def get_queryset(self):
+        return super(AllInstanceManager, self).get_queryset().filter()
+
+
+class OnlyActiveInstanceManager(models.Manager):
+    def get_queryset(self):
+        return (
+            super(OnlyActiveInstanceManager, self)
+            .get_queryset()
+            .filter(is_deleted=False)
+        )
+
+
+class SoftDeleteModel(models.Model):
+    is_deleted = models.BooleanField(default=False)
+    deleted_at = models.CharField(null=True, blank=True)
+
+    objects = OnlyActiveInstanceManager()
+    all_objects = AllInstanceManager()
+
+    class Meta:
+        abstract = True
+
+    def delete(self):
+        self.is_deleted = True
+        self.deleted_at = int(time.time())
+        self.save()
 
 
 class AbstractModel(_DateTimeStampingModel):
