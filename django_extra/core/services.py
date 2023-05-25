@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 
-from django.db import transaction
 from django.shortcuts import get_object_or_404
-from django_extra.core.cache import CustomCache
-from django_extra.settings import app_settings
 
 # pylint: disable=not-callable
 from django_extra.core.audit_service import AuditService
+from django_extra.core.cache import CustomCache
+from django_extra.settings import app_settings
+from django_extra.utility.misc import diff_dict
 
 
 class BaseService:
@@ -25,64 +25,76 @@ class BaseService:
     def get_cache_key(self):
         return f"{app_settings.service_name}:{self.instance.__class__.__name__.lower()}:{self.instance.id}"
 
-    def create(self, data, action="created", request=None, level="trace", remark=""):
-        with transaction.atomic():
-            ser = self.serializer(data=data)
-            ser.is_valid(raise_exception=True)
-            ser.save()
-            self.instance = ser.instance
-            if app_settings.use_service_cache and self.cache_serializer:
-                CustomCache(self.get_cache_key()).set(
-                    self.cache_serializer(self.instance).data
-                )
+    def create(self, data, request=None, audit_data=None):
+        ser = self.serializer(data=data)
+        ser.is_valid(raise_exception=True)
+        ser.save()
+        self.instance = ser.instance
+        if app_settings.use_service_cache and self.cache_serializer:
+            CustomCache(self.get_cache_key()).set(
+                self.cache_serializer(self.instance).data
+            )
 
-            if self.audit_enable and request:
-                entity = self.get_entity_data()
-                AuditService().send_event(
-                    action, entity, data, request, level=level, remark=remark
-                )
-            return self.instance
+        if self.audit_enable and request:
+            entity = self.get_entity_data()
+            audit_data = self._get_audit_data("created", audit_data)
+            AuditService().send_event(entity, data, request, audit_data)
+        return self.instance
 
-    def delete(self, action="deleted", request=None, level="trace", remark=""):
+    def delete(self, request=None, audit_data=None):
+        audit_data = self._get_audit_data("deleted", audit_data)
         if app_settings.use_service_cache and self.cache_serializer:
             CustomCache(self.get_cache_key()).delete()
-        if self.audit_enable:
+        if self.audit_enable and request:
             entity = self.get_entity_data()
             AuditService().send_event(
-                action,
-                entity,
-                self.serializer(self.instance).data,
-                request,
-                level=level,
-                remark=remark,
+                entity, self.serializer(self.instance).data, request, audit_data
             )
         self.instance.delete()
 
-    def update(
-        self,
-        data,
-        action="updated",
-        request=None,
-        partial=True,
-        level="trace",
-        remark="",
-    ):
+    def update(self, data, partial=True, request=None, audit_data=None):
         if self.update_fields:
             data = {
                 key: value for key, value in data.items() if key in self.update_fields
             }
-        with transaction.atomic():
-            ser = self.serializer(self.instance, data, partial=partial)
-            ser.is_valid(raise_exception=True)
-            ser.save()
-            self.instance = ser.instance
-            if app_settings.use_service_cache and self.cache_serializer:
-                CustomCache(self.get_cache_key()).set(
-                    self.cache_serializer(self.instance).data
-                )
-            if self.audit_enable and request:
-                entity = self.get_entity_data()
-                AuditService().send_event(
-                    action, entity, data, request, level=level, remark=remark
-                )
-            return self.instance
+        diff_data = diff_dict(self.serializer(self.instance).data, data)
+        ser = self.serializer(self.instance, data, partial=partial)
+        ser.is_valid(raise_exception=True)
+        ser.save()
+        self.instance = ser.instance
+        if app_settings.use_service_cache and self.cache_serializer:
+            CustomCache(self.get_cache_key()).set(
+                self.cache_serializer(self.instance).data
+            )
+        if self.audit_enable and request:
+            entity = self.get_entity_data()
+            audit_data = self._get_audit_data("updated", audit_data)
+            AuditService().send_event(entity, diff_data, request, audit_data)
+        return self.instance
+
+    def force_update(self, data, partial=True, request=None, audit_data=None):
+        diff_data = diff_dict(self.serializer(self.instance).data, data)
+        ser = self.serializer(self.instance, data, partial=partial)
+        ser.is_valid(raise_exception=True)
+        ser.save()
+        self.instance = ser.instance
+        if app_settings.use_service_cache and self.cache_serializer:
+            CustomCache(self.get_cache_key()).set(
+                self.cache_serializer(self.instance).data
+            )
+        if self.audit_enable and request:
+            entity = self.get_entity_data()
+            audit_data = self._get_audit_data("updated", audit_data)
+            AuditService().send_event(entity, diff_data, request, audit_data)
+        return self.instance
+
+    def _get_audit_data(self, action, audit_data):
+        if not audit_data:
+            audit_data = {}
+        if not audit_data.get("action"):
+            audit_data["action"] = action
+        if not audit_data.get("remark"):
+            audit_data["remark"] = f"{self.model.__class__.__name__} {action}"
+        if not audit_data.get("level"):
+            audit_data["level"] = "info"
+        return audit_data

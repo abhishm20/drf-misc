@@ -94,3 +94,21 @@ def mask_string(s_value, unmasked_length=4):
 
 def upload_to_s3(instance, filename):
     return f"{instance.__class__.__name__.lower()}/{instance.id}/{str(uuid.uuid4())}_{filename}"
+
+
+def diff_dict(dict1, dict2):
+    diff = {}
+    for k in dict1:
+        if k in dict2:
+            if isinstance(dict1[k], dict) and isinstance(dict2[k], dict):
+                nested_diff = diff_dict(dict1[k], dict2[k])
+                if nested_diff:
+                    diff[k] = nested_diff
+            elif dict1[k] != dict2[k]:
+                diff[k] = (dict1[k], dict2[k])
+        else:
+            diff[k] = (dict1[k], None)
+    for k in dict2:
+        if k not in dict1:
+            diff[k] = (None, dict2[k])
+    return diff
