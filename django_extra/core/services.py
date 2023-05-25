@@ -26,12 +26,6 @@ class BaseService:
         return f"{app_settings.service_name}:{self.instance.__class__.__name__.lower()}:{self.instance.id}"
 
     def create(self, data, request=None, audit_data=None):
-        if not audit_data:
-            audit_data = {
-                "action": "created",
-                "remark": f"{self.model.__class__.__name__} created",
-                "level": "info",
-            }
         ser = self.serializer(data=data)
         ser.is_valid(raise_exception=True)
         ser.save()
@@ -43,16 +37,12 @@ class BaseService:
 
         if self.audit_enable and request:
             entity = self.get_entity_data()
+            audit_data = self._get_audit_data("created", audit_data)
             AuditService().send_event(entity, data, request, audit_data)
         return self.instance
 
     def delete(self, request=None, audit_data=None):
-        if not audit_data:
-            audit_data = {
-                "action": "deleted",
-                "remark": f"{self.model.__class__.__name__} deleted",
-                "level": "info",
-            }
+        audit_data = self._get_audit_data("deleted", audit_data)
         if app_settings.use_service_cache and self.cache_serializer:
             CustomCache(self.get_cache_key()).delete()
         if self.audit_enable and request:
@@ -63,12 +53,6 @@ class BaseService:
         self.instance.delete()
 
     def update(self, data, partial=True, request=None, audit_data=None):
-        if not audit_data:
-            audit_data = {
-                "action": "updated",
-                "remark": f"{self.model.__class__.__name__} updated",
-                "level": "info",
-            }
         if self.update_fields:
             data = {
                 key: value for key, value in data.items() if key in self.update_fields
@@ -84,16 +68,11 @@ class BaseService:
             )
         if self.audit_enable and request:
             entity = self.get_entity_data()
+            audit_data = self._get_audit_data("updated", audit_data)
             AuditService().send_event(entity, diff_data, request, audit_data)
         return self.instance
 
     def force_update(self, data, partial=True, request=None, audit_data=None):
-        if not audit_data:
-            audit_data = {
-                "action": "updated",
-                "remark": f"{self.model.__class__.__name__} updated",
-                "level": "info",
-            }
         diff_data = diff_dict(self.serializer(self.instance).data, data)
         ser = self.serializer(self.instance, data, partial=partial)
         ser.is_valid(raise_exception=True)
@@ -105,5 +84,17 @@ class BaseService:
             )
         if self.audit_enable and request:
             entity = self.get_entity_data()
+            audit_data = self._get_audit_data("updated", audit_data)
             AuditService().send_event(entity, diff_data, request, audit_data)
         return self.instance
+
+    def _get_audit_data(self, action, audit_data):
+        if not audit_data:
+            audit_data = {}
+        if not audit_data.get("action"):
+            audit_data["action"] = action
+        if not audit_data.get("remark"):
+            audit_data["remark"] = f"{self.model.__class__.__name__} {action}"
+        if not audit_data.get("level"):
+            audit_data["level"] = "info"
+        return audit_data
