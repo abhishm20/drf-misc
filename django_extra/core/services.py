@@ -26,7 +26,7 @@ class BaseService:
         return f"{app_settings.service_name}:\
                 {self.instance.__class__.__name__.lower()}:{self.instance.id}"
 
-    def create(self, data, request, audit_data):
+    def create(self, data, request, audit_data=None):
         ser = self.serializer(data=data)
         ser.is_valid(raise_exception=True)
         ser.save()
@@ -42,7 +42,7 @@ class BaseService:
             AuditService().send_event(entity, data, request, audit_data)
         return self.instance
 
-    def delete(self, request, audit_data):
+    def delete(self, request, audit_data=None):
         audit_data = self._get_audit_data("deleted", audit_data)
         if app_settings.use_service_cache and self.cache_serializer:
             CustomCache(self.get_cache_key()).delete()
@@ -53,7 +53,7 @@ class BaseService:
             )
         self.instance.delete()
 
-    def update(self, data, request, audit_data, partial=True):
+    def update(self, data, request, audit_data=None, partial=True):
         if self.update_fields:
             data = {
                 key: value for key, value in data.items() if key in self.update_fields
@@ -73,7 +73,7 @@ class BaseService:
             AuditService().send_event(entity, diff_data, request, audit_data)
         return self.instance
 
-    def force_update(self, data, request, audit_data, partial=True):
+    def force_update(self, data, request, audit_data=None, partial=True):
         diff_data = diff_dict(self.serializer(self.instance).data, data)
         ser = self.serializer(self.instance, data, partial=partial)
         ser.is_valid(raise_exception=True)
@@ -89,7 +89,7 @@ class BaseService:
             AuditService().send_event(entity, diff_data, request, audit_data)
         return self.instance
 
-    def _get_audit_data(self, action, audit_data):
+    def _get_audit_data(self, action, audit_data=None):
         if not audit_data:
             audit_data = {}
         if not audit_data.get("action"):
