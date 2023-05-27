@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404  # pylint: disable=import-error
 
 # pylint: disable=not-callable
 from django_extra.core.audit_service import AuditService
@@ -23,9 +23,10 @@ class BaseService:
             self.instance = get_object_or_404(self.model, id=instance_id)
 
     def get_cache_key(self):
-        return f"{app_settings.service_name}:{self.instance.__class__.__name__.lower()}:{self.instance.id}"
+        return f"{app_settings.service_name}:\
+                {self.instance.__class__.__name__.lower()}:{self.instance.id}"
 
-    def create(self, data, request=None, audit_data=None):
+    def create(self, data, request, audit_data):
         ser = self.serializer(data=data)
         ser.is_valid(raise_exception=True)
         ser.save()
@@ -41,7 +42,7 @@ class BaseService:
             AuditService().send_event(entity, data, request, audit_data)
         return self.instance
 
-    def delete(self, request=None, audit_data=None):
+    def delete(self, request, audit_data):
         audit_data = self._get_audit_data("deleted", audit_data)
         if app_settings.use_service_cache and self.cache_serializer:
             CustomCache(self.get_cache_key()).delete()
@@ -52,7 +53,7 @@ class BaseService:
             )
         self.instance.delete()
 
-    def update(self, data, partial=True, request=None, audit_data=None):
+    def update(self, data, request, audit_data, partial=True):
         if self.update_fields:
             data = {
                 key: value for key, value in data.items() if key in self.update_fields
@@ -72,7 +73,7 @@ class BaseService:
             AuditService().send_event(entity, diff_data, request, audit_data)
         return self.instance
 
-    def force_update(self, data, partial=True, request=None, audit_data=None):
+    def force_update(self, data, request, audit_data, partial=True):
         diff_data = diff_dict(self.serializer(self.instance).data, data)
         ser = self.serializer(self.instance, data, partial=partial)
         ser.is_valid(raise_exception=True)
