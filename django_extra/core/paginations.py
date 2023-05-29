@@ -66,7 +66,7 @@ class Count15Pagination(PageNumberPagination):
             OrderedDict(
                 [
                     ("count", self.page.paginator.count),
-                    ("current_page", self.request.build_absolute_uri()),
+                    ("current_page", self.page.number),
                     ("page_size", self.get_page_size(self.request)),
                     ("results", data),
                 ]
