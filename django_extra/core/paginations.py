@@ -67,10 +67,8 @@ class Count15Pagination(PageNumberPagination):
                 [
                     ("count", self.page.paginator.count),
                     ("next", self.get_next_link()),
-                    ("first_page_link", self.get_first_page_link()),
-                    ("current_page_link", self.request.build_absolute_uri()),
-                    ("previous", self.get_previous_link()),
-                    ("last_page_link", self.get_last_page_link()),
+                    ("current_page", self.request.build_absolute_uri()),
+                    ("last_page", self.get_last_page_link()),
                     ("results", data),
                 ]
             )
