@@ -38,7 +38,7 @@ class BaseService:
                 self.cache_serializer(self.instance).data
             )
 
-        if self.audit_enable and request:
+        if self.audit_enable:
             entity = self.get_entity_data()
             audit_data = self._get_audit_data("created", audit_data)
             AuditService().send_event(entity, data, request, audit_data)
@@ -48,7 +48,7 @@ class BaseService:
         audit_data = self._get_audit_data("deleted", audit_data)
         if app_settings.use_service_cache and self.cache_serializer:
             CustomCache(self.get_cache_key()).delete()
-        if self.audit_enable and request:
+        if self.audit_enable:
             entity = self.get_entity_data()
             AuditService().send_event(
                 entity, self.serializer(self.instance).data, request, audit_data
@@ -69,7 +69,7 @@ class BaseService:
             CustomCache(self.get_cache_key()).set(
                 self.cache_serializer(self.instance).data
             )
-        if self.audit_enable and request:
+        if self.audit_enable:
             entity = self.get_entity_data()
             audit_data = self._get_audit_data("updated", audit_data)
             AuditService().send_event(entity, diff_data, request, audit_data)
@@ -85,7 +85,7 @@ class BaseService:
             CustomCache(self.get_cache_key()).set(
                 self.cache_serializer(self.instance).data
             )
-        if self.audit_enable and request:
+        if self.audit_enable:
             entity = self.get_entity_data()
             audit_data = self._get_audit_data("updated", audit_data)
             AuditService().send_event(entity, diff_data, request, audit_data)
