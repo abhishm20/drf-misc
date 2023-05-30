@@ -28,3 +28,5 @@ class AppSettings:
 
 
 app_settings = AppSettings()
+
+TIME_ZONE = "Asia/Kolkata"
