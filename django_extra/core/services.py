@@ -18,9 +18,11 @@ class BaseService:
     get_entity_data = None
     update_fields = []
 
-    def __init__(self, instance_id=None):
+    def __init__(self, instance_id=None, instance=None):
         if instance_id:
             self.instance = get_object_or_404(self.model, id=instance_id)
+        elif instance:
+            self.instance = instance
 
     def get_cache_key(self):
         return f"{app_settings.service_name}:\
