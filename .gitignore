@@ -126,7 +126,6 @@ project/settings/local/db.py
 .idea/
 .idea/**
 .env/**
-.vscode/**
 .package-lock.json
 .serverless
 .fleet

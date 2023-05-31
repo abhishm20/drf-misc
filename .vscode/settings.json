@@ -1,0 +1,18 @@
+{
+  "cSpell.words": [
+    "dataframe",
+    "filterset",
+    "IFSC",
+    "Topup",
+    "Topups",
+    "unhold",
+    "UNRIS",
+    "xlwt"
+  ],
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "python.envFile": "${workspaceFolder}/venv",
+  "python.formatting.provider": "black",
+  "python.analysis.extraPaths": ["./project/apps"]
+}
