@@ -105,7 +105,7 @@ def diff_dict(dict1, dict2):
     return diff
 
 
-def format_indian(number):
+def format_amount(number):
     s = str(number)
     if len(s) <= 3:
         return s
