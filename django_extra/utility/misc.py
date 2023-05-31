@@ -119,10 +119,8 @@ def format_indian(number):
     if len(s) <= 3:
         return s
     else:
-        remainder = len(s) % 2
-        leading = s[:remainder]
-        remaining = s[remainder:]
+        base_three = s[-3:]
+        remaining = s[:-3]
         parts = [remaining[i : i + 2] for i in range(0, len(remaining), 2)]
-        if leading:
-            parts = [leading] + parts
+        parts = parts + [base_three]
         return ",".join(parts)
