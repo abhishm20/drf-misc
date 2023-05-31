@@ -112,3 +112,17 @@ def diff_dict(dict1, dict2):
         if k not in dict1:
             diff[k] = (None, dict2[k])
     return diff
+
+
+def format_indian(number):
+    s = str(number)
+    if len(s) <= 3:
+        return s
+    else:
+        remainder = len(s) % 2
+        leading = s[:remainder]
+        remaining = s[remainder:]
+        parts = [remaining[i : i + 2] for i in range(0, len(remaining), 2)]
+        if leading:
+            parts = [leading] + parts
+        return ",".join(parts)
