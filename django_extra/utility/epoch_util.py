@@ -1,5 +1,6 @@
-import time
+# -*- coding: utf-8 -*-
 from datetime import datetime
+
 import moment
 
 
@@ -16,12 +17,6 @@ def sod(epoch_time):
 
 def eod(epoch_time):
     return moment.unix(epoch_time).replace(hours=23, minutes=59, seconds=59).epoch()
-
-
-def delta_time(_tm, days):
-    if _tm is None:
-        _tm = int(time.time())
-    return moment.unix(int(_tm)).add(days=day)
 
 
 def get_date_array(start, count, asc=True, period="days"):

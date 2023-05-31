@@ -4,7 +4,6 @@ from __future__ import absolute_import, unicode_literals
 import mimetypes
 import random
 import string
-import uuid
 from collections import OrderedDict
 from itertools import tee
 
@@ -67,10 +66,6 @@ def get_client_ip(request):
     return _ip
 
 
-def is_exists(obj, value):
-    return hasattr(obj, value) and getattr(obj, value)
-
-
 def make_name_value_pair(set_list):
     return [{"name": x[1], "value": x[0]} for x in set_list]
 
@@ -90,10 +85,6 @@ def mask_string(s_value, unmasked_length=4):
     if s_value:
         return f"{'*' * (len(s_value) - unmasked_length)}{s_value[:unmasked_length]}"
     return ""
-
-
-def upload_to_s3(instance, filename):
-    return f"{instance.__class__.__name__.lower()}/{instance.id}/{str(uuid.uuid4())}_{filename}"
 
 
 def diff_dict(dict1, dict2):
