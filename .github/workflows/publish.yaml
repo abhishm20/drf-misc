@@ -55,8 +55,8 @@ jobs:
           TWINE_USERNAME: __token__ # Replace with your PyPI username
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }} # Replace with your PyPI token stored as a GitHub secret
         run: |
-          python3 -m pip install --upgrade twine
           python3 -m pip install --upgrade build
-          python3 -m build --version "${{ steps.version.outputs.version }}"
+          python3 -m build --version "${{ steps.version.outputs.version }}" --outdir dist/
+          python3 -m pip install --upgrade twine
           python3 -m twine upload --repository pypi dist/*
         if: github.ref == 'refs/tags/v${{ steps.version.outputs.version }}'
