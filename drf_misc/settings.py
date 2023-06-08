@@ -6,7 +6,7 @@ from django.conf import settings
 
 class AppSettings:
     def __init__(self):
-        self.app_settings = getattr(settings, "DJANGO_EXTRA_SETTINGS", {})
+        self.app_settings = getattr(settings, "DRF_MISC_SETTINGS", {})
 
     @property
     def service_name(self):
