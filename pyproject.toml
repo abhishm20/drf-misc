@@ -2,7 +2,7 @@
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 [project]
-name = "django-extra"
+name = "drf-misc"
 version = "0.0.1"
 authors = [
   { name="Abhishek Sharma", email="abhishm20@gmail.com" },
@@ -17,8 +17,8 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/abhishm20/django-extra"
-"Bug Tracker" = "https://github.com/abhishm20/django-extra/issues"
+"Homepage" = "https://github.com/abhishm20/drf-misc"
+"Bug Tracker" = "https://github.com/abhishm20/drf-misc/issues"
 
 [tool.black]
 line-length = 88

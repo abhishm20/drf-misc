@@ -4,7 +4,7 @@ import re
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 
-from django_extra.core.api_exceptions import BadRequest
+from src.core.api_exceptions import BadRequest
 
 
 def validate_mobile(value, raise_exception=True, mobile_no_only=True):

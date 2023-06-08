@@ -2,7 +2,7 @@
 from django.apps import apps
 from django.contrib import admin
 
-from django_extra.settings import app_settings
+from src.settings import app_settings
 
 # pylint: disable=super-with-arguments,no-member
 
@@ -20,4 +20,4 @@ if app_settings.ADD_ALL_MODELS_IN_ADMIN:
         try:
             admin.site.register(i, AdminClass)
         except admin.sites.AlreadyRegistered as e:
-            print(e)
+            pass

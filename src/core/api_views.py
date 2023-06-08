@@ -8,8 +8,8 @@ from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
-from django_extra.core.api_exceptions import BadRequest
-from django_extra.core.filter_backend import FlexFieldsFilterBackend
+from src.core.api_exceptions import BadRequest
+from src.core.filter_backend import FlexFieldsFilterBackend
 
 # pylint: disable=unused-argument,no-member, protected-access
 

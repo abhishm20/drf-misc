@@ -11,18 +11,11 @@ repos:
       - id: debug-statements
       - id: end-of-file-fixer
       - id: fix-encoding-pragma
-      - id: name-tests-test
-        args: [ "--django" ]
       - id: trailing-whitespace
       - id: requirements-txt-fixer
 
-  - repo: https://github.com/ambv/black
-    rev: 23.1.0
-    hooks:
-      - id: black
-
   - repo: https://github.com/PyCQA/autoflake
-    rev:  v2.0.1
+    rev: v2.0.1
     hooks:
       - id: autoflake
         name: Remove unused variables and imports
@@ -37,12 +30,11 @@ repos:
           ]
         files: \.py$
 
-
   - repo: https://github.com/pycqa/bandit
     rev: 1.7.4
     hooks:
       - id: bandit
-        args: [ '-iii', '-ll' ]
+        args: ["-iii", "-ll"]
 
   - repo: https://github.com/asottile/seed-isort-config
     rev: v2.2.0
@@ -54,25 +46,23 @@ repos:
     hooks:
       - id: isort
 
-  - repo: https://github.com/pycqa/pylint
-    rev: "v2.16.0"
-    hooks:
-      - id: pylint
-        language: system
-        types: [python]
-        args: [
-          "-rn", # Only display messages
-          "--rcfile=./.pylintrc", # Link to your config file,
-        ]
-        exclude: "[a-zA-Z]*/(migrations)/(.)*"
-
-
   - repo: https://github.com/codespell-project/codespell
     rev: v2.2.2
     hooks:
-    -   id: codespell
+      - id: codespell
         name: codespell
         description: Checks for common misspellings in text files.
-        entry: codespell --ignore-words ignore-spelling-words.txt readme.md
+        entry: codespell --ignore-words ignore-spelling-words.txt
         language: python
         types: [text]
+
+  - repo: https://github.com/dhruvmanila/remove-print-statements
+    rev: "v0.5.0"
+    hooks:
+      - id: remove-print-statements
+        args: ["--verbose"]
+
+  - repo: https://github.com/ambv/black
+    rev: 23.1.0
+    hooks:
+      - id: black

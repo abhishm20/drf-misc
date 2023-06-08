@@ -4,10 +4,10 @@ from __future__ import absolute_import, unicode_literals
 from django.shortcuts import get_object_or_404  # pylint: disable=import-error
 
 # pylint: disable=not-callable
-from django_extra.core.audit_service import AuditService
-from django_extra.core.cache import CustomCache
-from django_extra.settings import app_settings
-from django_extra.utility.misc import diff_dict
+from src.core.audit_service import AuditService
+from src.core.cache import CustomCache
+from src.settings import app_settings
+from src.utility.misc import diff_dict
 
 
 class BaseService:

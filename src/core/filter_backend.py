@@ -9,7 +9,7 @@ from django.db import models
 from rest_framework.compat import coreapi, coreschema
 from rest_framework.filters import BaseFilterBackend
 
-from django_extra.core.serializers import FlexFieldsModelSerializer
+from src.core.serializers import FlexFieldsModelSerializer
 
 # pylint: disable=protected-access
 

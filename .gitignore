@@ -168,3 +168,6 @@ db.sqlite3-journal
 Pipfile.lock
 poetry.lock
 pdm.lock
+
+
+.pypirc

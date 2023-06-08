@@ -6,7 +6,7 @@ import inspect
 import jwt
 from django.utils.deprecation import MiddlewareMixin
 
-from django_extra.settings import app_settings
+from src.settings import app_settings
 
 # pylint: disable=inconsistent-return-statements
 

@@ -29,8 +29,5 @@ def get_date_array(start, count, asc=True, period="days"):
         else:
             temp = temp.subtract(**{period: 1})
     for a in date_iter:
-        print(
-            moment.unix(a[0]).timezone("Asia/Kolkata"),
-            moment.unix(a[1]).timezone("Asia/Kolkata"),
-        )
+        pass
     return date_iter

@@ -8,7 +8,7 @@ import boto3
 from django.conf import settings
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
-from django_extra.settings import app_settings
+from src.settings import app_settings
 
 app_logger = getattr(settings, "app_logger", None)
 
