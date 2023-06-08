@@ -32,6 +32,11 @@ jobs:
     permissions:
       id-token: write # IMPORTANT: this permission is mandatory for trusted publishing
     steps:
+      - name: "Checkout Code"
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       - name: "Setup Python"
         uses: actions/setup-python@v3
         with:
@@ -40,11 +45,6 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
-
-      - name: "Checkout Code"
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       - name: Determine version
         id: version
