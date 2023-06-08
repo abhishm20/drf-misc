@@ -2,7 +2,7 @@
 from django.apps import apps
 from django.contrib import admin
 
-from src.settings import app_settings
+from drf_misc.settings import app_settings
 
 # pylint: disable=super-with-arguments,no-member
 

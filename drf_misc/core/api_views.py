@@ -8,8 +8,8 @@ from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
-from src.core.api_exceptions import BadRequest
-from src.core.filter_backend import FlexFieldsFilterBackend
+from drf_misc.core.api_exceptions import BadRequest
+from drf_misc.core.filter_backend import FlexFieldsFilterBackend
 
 # pylint: disable=unused-argument,no-member, protected-access
 

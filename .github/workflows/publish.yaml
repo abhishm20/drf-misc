@@ -61,7 +61,7 @@ jobs:
         run: >-
           python3 -m
           build
-          --sdist
+          --sdist src/
           --wheel
           --outdir dist/
           .
