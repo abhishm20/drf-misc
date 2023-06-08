@@ -32,19 +32,31 @@ jobs:
     permissions:
       id-token: write # IMPORTANT: this permission is mandatory for trusted publishing
     steps:
-      - name: "Checkout Code"
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - name: "Setup Python"
         uses: actions/setup-python@v3
         with:
           python-version: "3.9"
           cache: "pip"
-      - name: Build distribution
-        run: |
-          python3 -m build
-      - name: Publish package distributions to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: "Checkout Code"
+        uses: actions/checkout@v3
         with:
-          password: ${{ secrets.PYPI_PASSWORD }}
+          fetch-depth: 0
+
+      - name: Determine version
+        id: version
+        run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Build and publish
+        env:
+          TWINE_USERNAME: __token__ # Replace with your PyPI username
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }} # Replace with your PyPI token stored as a GitHub secret
+        run: |
+          python3 -m pip install --upgrade twine
+          python3 -m pip install --upgrade build
+          python3 -m build
+          python3 -m twine upload --repository pypi dist/*
+        if: github.ref == 'refs/tags/v${{ steps.version.outputs.version }}'
