@@ -56,6 +56,14 @@ jobs:
           --wheel
           --outdir dist/
           .
+      - name: Extract tag name
+        id: tag
+        run: echo ::set-output name=TAG_NAME::$(echo $GITHUB_REF | cut -d / -f 3)
+
+      - name: Update version in pyproject.toml
+        run: >-
+          sed -i '' "s/{{VERSION_PLACEHOLDER}}/${{ steps.tag.outputs.TAG_NAME }}/g" pyproject.toml
+
       - name: Publish distribution 📦 to Test PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
@@ -67,21 +75,3 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_PASSWORD }}
-
-          # - name: Install dependencies
-      #   run: pip install -r requirements.txt
-
-      # - name: Determine version
-      #   id: version
-      #   run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-
-      # - name: Build and publish
-      #   env:
-      #     TWINE_USERNAME: __token__ # Replace with your PyPI username
-      #     TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }} # Replace with your PyPI token stored as a GitHub secret
-      #   run: |
-      #     python3 -m pip install --upgrade build
-      #     python3 -m build --version "${{ steps.version.outputs.version }}" --outdir dist/
-      #     python3 -m pip install --upgrade twine
-      #     python3 -m twine upload --repository pypi dist/*
-      #   if: github.ref == 'refs/tags/v${{ steps.version.outputs.version }}'

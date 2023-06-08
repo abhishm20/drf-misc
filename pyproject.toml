@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 [project]
 name = "drf-misc"
-version = "0.0.1"
+version = "{{VERSION_PLACEHOLDER}}"
 authors = [
   { name="Abhishek Sharma", email="abhishm20@gmail.com" },
 ]
