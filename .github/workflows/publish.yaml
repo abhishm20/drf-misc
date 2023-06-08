@@ -42,21 +42,46 @@ jobs:
         with:
           python-version: "3.9"
           cache: "pip"
+      - name: Install pypa/build
+        run: >-
+          python3 -m
+          pip install
+          build
+          --user
+      - name: Build a binary wheel and a source tarball
+        run: >-
+          python3 -m
+          build
+          --sdist
+          --wheel
+          --outdir dist/
+          .
+      - name: Publish distribution 📦 to Test PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.TEST_PYPI_PASSWORD }}
+          repository-url: https://test.pypi.org/legacy/
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+      - name: Publish distribution 📦 to PyPI
+        if: startsWith(github.ref, 'refs/tags')
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_PASSWORD }}
 
-      - name: Determine version
-        id: version
-        run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+          # - name: Install dependencies
+      #   run: pip install -r requirements.txt
 
-      - name: Build and publish
-        env:
-          TWINE_USERNAME: __token__ # Replace with your PyPI username
-          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }} # Replace with your PyPI token stored as a GitHub secret
-        run: |
-          python3 -m pip install --upgrade build
-          python3 -m build --version "${{ steps.version.outputs.version }}" --outdir dist/
-          python3 -m pip install --upgrade twine
-          python3 -m twine upload --repository pypi dist/*
-        if: github.ref == 'refs/tags/v${{ steps.version.outputs.version }}'
+      # - name: Determine version
+      #   id: version
+      #   run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      # - name: Build and publish
+      #   env:
+      #     TWINE_USERNAME: __token__ # Replace with your PyPI username
+      #     TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }} # Replace with your PyPI token stored as a GitHub secret
+      #   run: |
+      #     python3 -m pip install --upgrade build
+      #     python3 -m build --version "${{ steps.version.outputs.version }}" --outdir dist/
+      #     python3 -m pip install --upgrade twine
+      #     python3 -m twine upload --repository pypi dist/*
+      #   if: github.ref == 'refs/tags/v${{ steps.version.outputs.version }}'
