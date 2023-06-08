@@ -1,13 +1,11 @@
 # .github/workflows/ci-cd.yml
 ---
-name: "Deployment"
+name: "Plublish to PyPI"
 
 on:
-  push:
-    branches:
-      - release/**
-    tags:
-      - "*"
+  release:
+    types: [published]
+
   workflow_dispatch:
     inputs:
       logLevel:
@@ -36,3 +34,5 @@ jobs:
     steps:
       - name: Publish package distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_PASSWORD }}
