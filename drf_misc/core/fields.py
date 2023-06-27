@@ -20,7 +20,7 @@ class EpochField(models.CharField):  # Store as CharField for simplicity
     default_validators = [validate_epoch]
 
     def __init__(self, *args, **kwargs):
-        self.nullable = kwargs.pop("nullable", False)
+        self.nullable = kwargs.pop("nullable", True)
         self.default_current_time = kwargs.pop("default_current_time", False)
         self.update_now = kwargs.pop("update_now", False)
         kwargs["max_length"] = kwargs.pop("max_length", 20)
