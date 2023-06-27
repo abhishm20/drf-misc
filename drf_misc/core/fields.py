@@ -23,7 +23,7 @@ class EpochField(models.CharField):  # Store as CharField for simplicity
         self.nullable = kwargs.pop("nullable", False)
         self.default_current_time = kwargs.pop("default_current_time", False)
         self.update_now = kwargs.pop("update_now", False)
-        kwargs["max_length"] = kwargs.pop("max_length", 17)
+        kwargs["max_length"] = kwargs.pop("max_length", 20)
         if self.default_current_time:
             kwargs["default"] = str(time.time())
         if self.nullable:

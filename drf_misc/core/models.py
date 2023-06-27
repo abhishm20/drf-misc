@@ -21,7 +21,7 @@ class _DateTimeStampingModel(models.Model):
     def save(self, *args, **kwargs):
         if not self.id:
             self.id = str(uuid.uuid4())
-        self.updated_at = int(time.time())
+        self.updated_at = str(time.time())
         super().save(*args, **kwargs)
 
 
