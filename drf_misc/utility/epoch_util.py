@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 
 def unix_to_dt(unix):
-    # uts can be 1686868399 or 1686868399000 or 1686868399.000
+    # uts can be 1686868399 or 1686868399000 (millisecond) or 1686868399.000 or 1686868399000000 (microseconds) [Not supported for now]
     if len(str(unix)) > 11 and "." not in str(unix):
         unix = float(unix) / 1000
     else:
