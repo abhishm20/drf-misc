@@ -6,12 +6,14 @@ import uuid
 
 from django.db import models
 
+from drf_misc.core.fields import EpochField
+
 # pylint: disable=no-member,access-member-before-definition,invalid-name
 
 
 class _DateTimeStampingModel(models.Model):
-    created_at = models.CharField(max_length=32, null=True, default=None)
-    updated_at = models.CharField(max_length=32, null=True, default=None)
+    created_at = EpochField(default_current_time=True, milliseconds=True)
+    updated_at = EpochField(nullable=True, update_now=True, milliseconds=True)
 
     class Meta:
         abstract = True
@@ -19,7 +21,6 @@ class _DateTimeStampingModel(models.Model):
     def save(self, *args, **kwargs):
         if not self.id:
             self.id = str(uuid.uuid4())
-            self.created_at = int(time.time())
         self.updated_at = int(time.time())
         super().save(*args, **kwargs)
 
