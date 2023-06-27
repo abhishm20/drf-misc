@@ -12,8 +12,8 @@ from drf_misc.core.fields import EpochField
 
 
 class _DateTimeStampingModel(models.Model):
-    created_at = EpochField(default_current_time=True, milliseconds=True)
-    updated_at = EpochField(nullable=True, update_now=True, milliseconds=True)
+    created_at = EpochField(default_current_time=True)
+    updated_at = EpochField(nullable=True, update_now=True)
 
     class Meta:
         abstract = True
