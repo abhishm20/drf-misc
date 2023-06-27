@@ -39,15 +39,15 @@ class EpochField(models.CharField):  # Store as CharField for simplicity
         return value
 
     def from_db_value(self, value, expression, connection):
-        if value is None:
-            return value
+        if not value:
+            return None
         return float(value)
 
     def to_python(self, value):
         if isinstance(value, float):
             return value
-        if value is None:
-            return value
+        if not value:
+            return None
         try:
             return float(value)
         except (TypeError, ValueError) as error:
