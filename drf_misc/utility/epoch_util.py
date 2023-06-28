@@ -12,6 +12,13 @@ def unix_to_dt(unix):
     return datetime.fromtimestamp(unix)
 
 
+def get_days_diff(start_date, end_date, zero_as_min=True):
+    days = (unix_to_dt(end_date).date() - unix_to_dt(start_date).date()).days
+    if zero_as_min:
+        return max(days, 0)
+    return days
+
+
 def dt_to_unix(date_time):
     # dt can be date instance or datetime instance
     if isinstance(date_time, str):
@@ -23,7 +30,7 @@ def dt_to_unix(date_time):
             date_time = datetime.strptime(date_time, "%Y-%m-%d %H:%M:%S")
     if len(str(date_time)) <= 10:
         date_time = datetime(date_time.year, date_time.month, date_time.day)
-    return int(time.mktime(date_time.timetuple()))
+    return str(time.mktime(date_time.timetuple()))
 
 
 def append_current_time(unix):
