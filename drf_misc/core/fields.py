@@ -41,20 +41,12 @@ class EpochField(models.CharField):  # Store as CharField for simplicity
     def from_db_value(self, value, expression, connection):
         if not value:
             return None
-        return float(value)
+        return str(value)
 
     def to_python(self, value):
-        if isinstance(value, float):
-            return value
-        if not value:
-            return None
-        try:
-            return float(value)
-        except (TypeError, ValueError) as error:
-            raise ValidationError(
-                f"{value} can not be converted to Unix timestamp",
-                params={"value": value},
-            ) from error
+        if value:
+            str(value)
+        return None
 
     def get_prep_value(self, value):
         return str(value) if value is not None else value
