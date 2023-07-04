@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import time
 from datetime import datetime, timedelta
 
 
@@ -24,13 +23,17 @@ def dt_to_unix(date_time):
     if isinstance(date_time, str):
         if len(date_time) == 10:
             date_time = datetime.strptime(date_time[:10], "%Y-%m-%d")
-        elif len(date_time) > 10 and "T" in date_time:
-            date_time = datetime.strptime(date_time, "%Y-%m-%dT%H:%M:%S")
-        else:
-            date_time = datetime.strptime(date_time, "%Y-%m-%d %H:%M:%S")
-    if len(str(date_time)) <= 10:
-        date_time = datetime(date_time.year, date_time.month, date_time.day)
-    return str(time.mktime(date_time.timetuple()))
+        elif len(date_time) > 10 and "." in date_time:
+            if "T" in date_time:
+                date_time = datetime.strptime(date_time, "%Y-%m-%dT%H:%M:%S.%f")
+            else:
+                date_time = datetime.strptime(date_time, "%Y-%m-%d %H:%M:%S.%f")
+        elif len(date_time) > 10 and "." not in date_time:
+            if "T" in date_time:
+                date_time = datetime.strptime(date_time, "%Y-%m-%dT%H:%M:%S")
+            else:
+                date_time = datetime.strptime(date_time, "%Y-%m-%d %H:%M:%S")
+    return str(date_time.timestamp())
 
 
 def append_current_time(unix):
