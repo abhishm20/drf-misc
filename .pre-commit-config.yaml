@@ -56,12 +56,6 @@ repos:
         language: python
         types: [text]
 
-  - repo: https://github.com/dhruvmanila/remove-print-statements
-    rev: "v0.5.0"
-    hooks:
-      - id: remove-print-statements
-        args: ["--verbose"]
-
   - repo: https://github.com/ambv/black
     rev: 23.1.0
     hooks:

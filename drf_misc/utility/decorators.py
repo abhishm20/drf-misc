@@ -1,21 +1,22 @@
 # -*- coding: utf-8 -*-
-import functools
 import time
+from re import DEBUG
 
 from django.db import connection, reset_queries
 
 
 def query_debugger(func):
-    @functools.wraps(func)
     def inner_func(*args, **kwargs):
-        reset_queries()
-        len(connection.queries)
-
-        time.perf_counter()
+        if DEBUG:
+            reset_queries()
+            st = time.time()
         result = func(*args, **kwargs)
-        time.perf_counter()
 
-        len(connection.queries)
+        if DEBUG:
+            print(
+                f"------Queries count for {func.__qualname__}: {len(connection.queries)}------"
+            )
+            print(f"------Time taken for {func.__qualname__}: {time.time() - st}------")
         return result
 
     return inner_func
