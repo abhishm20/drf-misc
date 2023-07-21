@@ -33,6 +33,9 @@ class AuditService:
         self._push_to_queue(body, request)
 
     def _push_to_queue(self, body, request):
+        if not app_settings.audit_queue_url:
+            app_logger.exception("Audit SQS is not configured, payload: %s", body)
+            return None
         body["headers"] = {
             "auth_token": request.META.get("HTTP_AUTHORIZATION")
             if request
@@ -40,11 +43,17 @@ class AuditService:
             "source_ip": request.META.get("REMOTE_ADDR") if request else "System",
             "user_agent": request.META.get("HTTP_USER_AGENT") if request else "System",
         }
-        res = self.client.send_message(
-            QueueUrl=app_settings.audit_queue_url,
-            MessageBody=json.dumps(body),
-            MessageGroupId=app_settings.service_name,
-        )
+        try:
+            res = self.client.send_message(
+                QueueUrl=app_settings.audit_queue_url,
+                MessageBody=json.dumps(body),
+                MessageGroupId=app_settings.service_name,
+            )
+        except Exception as error:
+            app_logger.exception(
+                "Event push to Audit SQS: payload: %s, error: %s", body, error
+            )
+            return None
         if app_logger:
             app_logger.info(
                 "Event push to Audit SQS: payload: %s, response: %s", body, res
