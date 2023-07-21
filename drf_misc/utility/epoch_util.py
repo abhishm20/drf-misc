@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
+
 from dateutil.relativedelta import relativedelta
 
 
@@ -34,7 +35,7 @@ def dt_to_unix(date_time):
                 date_time = datetime.strptime(date_time, "%Y-%m-%dT%H:%M:%S")
             else:
                 date_time = datetime.strptime(date_time, "%Y-%m-%d %H:%M:%S")
-    return str(date_time.timestamp())
+    return float(date_time.timestamp())
 
 
 def append_current_time(unix):

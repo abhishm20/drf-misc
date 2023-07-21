@@ -16,7 +16,7 @@ def validate_epoch(value):
         ) from error
 
 
-class EpochField(models.CharField):  # Store as CharField for simplicity
+class EpochField(models.FloatField):  # Store as CharField for simplicity
     default_validators = [validate_epoch]
 
     def __init__(self, *args, **kwargs):
@@ -34,18 +34,18 @@ class EpochField(models.CharField):  # Store as CharField for simplicity
     def pre_save(self, model_instance, add):
         value = super().pre_save(model_instance, add)
         if self.update_now:
-            value = str(time.time())
+            value = float(time.time())
             setattr(model_instance, self.attname, value)
         return value
 
     def from_db_value(self, value, expression, connection):
         if not value:
             return None
-        return str(value)
+        return float(value)
 
     def to_python(self, value):
         if value:
-            str(value)
+            float(value)
         return None
 
     def get_prep_value(self, value):
