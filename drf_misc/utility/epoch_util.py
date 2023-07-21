@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime, timedelta
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 
 def unix_to_dt(unix):
@@ -65,7 +66,7 @@ def eod(unix):
 
 def delta_time(unix, ch_dict):
     date_time = unix_to_dt(unix)
-    return dt_to_unix(date_time + timedelta(**ch_dict))
+    return dt_to_unix(date_time + relativedelta(**ch_dict))
 
 
 def get_date_array(start, count, asc=True, period="days"):
