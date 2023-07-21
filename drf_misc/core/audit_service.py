@@ -50,9 +50,10 @@ class AuditService:
                 MessageGroupId=app_settings.service_name,
             )
         except Exception as error:
-            app_logger.exception(
-                "Event push to Audit SQS: payload: %s, error: %s", body, error
-            )
+            if app_logger:
+                app_logger.exception(
+                    "Event push to Audit SQS: payload: %s, error: %s", body, error
+                )
             return None
         if app_logger:
             app_logger.info(
