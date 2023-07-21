@@ -49,4 +49,4 @@ class EpochField(models.FloatField):  # Store as CharField for simplicity
         return None
 
     def get_prep_value(self, value):
-        return str(value) if value is not None else value
+        return float(value) if value is not None else value
