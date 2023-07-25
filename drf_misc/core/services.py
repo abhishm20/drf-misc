@@ -25,8 +25,7 @@ class BaseService:
             self.instance = instance
 
     def get_cache_key(self):
-        return f"{app_settings.service_name}:\
-                {self.instance.__class__.__name__.lower()}:{self.instance.id}"
+        return f"{app_settings.service_name}:{self.instance.__class__.__name__.lower()}:{self.instance.id}"
 
     def create(self, data, request, audit_data=None):
         ser = self.serializer(data=data)
