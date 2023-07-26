@@ -34,7 +34,8 @@ class AuditService:
 
     def _push_to_queue(self, body, request):
         if not app_settings.audit_queue_url:
-            app_logger.exception("Audit SQS is not configured, payload: %s", body)
+            if app_logger:
+                app_logger.exception("Audit SQS is not configured, payload: %s", body)
             return None
         body["headers"] = {
             "auth_token": request.META.get("HTTP_AUTHORIZATION")
