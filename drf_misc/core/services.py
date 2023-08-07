@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 
-from django.shortcuts import get_object_or_404  # pylint: disable=import-error
+from django.shortcuts import get_object_or_404
+
+from drf_misc.core.api_exceptions import BadRequest  # pylint: disable=import-error
 
 # pylint: disable=not-callable
 from drf_misc.core.audit_service import AuditService
@@ -87,10 +89,16 @@ class BaseService:
             AuditService().send_event(entity, diff_data, request, audit_data)
         return self.instance
 
-    def set_cache(self):
+    def set_cache(self, raise_exception=False):
         if app_settings.use_service_cache and self.cache_serializer:
             CustomCache(self.get_cache_key()).set(
                 self.cache_serializer(self.instance).data
+            )
+        elif raise_exception:
+            raise BadRequest(
+                {
+                    "message": f"Caching is not configured for {self.model.__class__.__name__}"
+                }
             )
 
     def _get_audit_data(self, action, audit_data=None):

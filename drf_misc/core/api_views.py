@@ -99,7 +99,9 @@ class RelationalGenericViewSet(
     def _refresh_cache(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         for instance in queryset:
-            instance = self.service_class(instance=instance).set_cache()
+            instance = self.service_class(instance=instance).set_cache(
+                raise_exception=True
+            )
         return Response({"message": "Successfully refreshed"})
 
 
