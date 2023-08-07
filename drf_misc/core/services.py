@@ -25,17 +25,17 @@ class BaseService:
             self.instance = instance
 
     def get_cache_key(self):
-        return f"{app_settings.service_name}:{self.instance.__class__.__name__.lower()}:{self.instance.id}"
+        return (
+            f"{app_settings.service_name}:"
+            f"{self.instance.__class__.__name__.lower()}:{self.instance.id}"
+        )
 
     def create(self, data, request, audit_data=None):
         ser = self.serializer(data=data)
         ser.is_valid(raise_exception=True)
         ser.save()
         self.instance = ser.instance
-        if app_settings.use_service_cache and self.cache_serializer:
-            CustomCache(self.get_cache_key()).set(
-                self.cache_serializer(self.instance).data
-            )
+        self.set_cache()
 
         if self.audit_enable:
             entity = self.get_entity_data()
@@ -64,10 +64,7 @@ class BaseService:
         ser.is_valid(raise_exception=True)
         ser.save()
         self.instance = ser.instance
-        if app_settings.use_service_cache and self.cache_serializer:
-            CustomCache(self.get_cache_key()).set(
-                self.cache_serializer(self.instance).data
-            )
+        self.set_cache()
         if self.audit_enable:
             entity = self.get_entity_data()
             audit_data = self._get_audit_data("updated", audit_data)
@@ -89,6 +86,12 @@ class BaseService:
             audit_data = self._get_audit_data("updated", audit_data)
             AuditService().send_event(entity, diff_data, request, audit_data)
         return self.instance
+
+    def set_cache(self):
+        if app_settings.use_service_cache and self.cache_serializer:
+            CustomCache(self.get_cache_key()).set(
+                self.cache_serializer(self.instance).data
+            )
 
     def _get_audit_data(self, action, audit_data=None):
         if not audit_data:

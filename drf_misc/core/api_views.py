@@ -4,6 +4,7 @@ from __future__ import absolute_import, unicode_literals
 from django.db.models.query import QuerySet
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, status, viewsets
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework_extensions.mixins import NestedViewSetMixin
@@ -93,6 +94,13 @@ class RelationalGenericViewSet(
             request.data._mutable = True
         if hasattr(request.GET, "_mutable"):
             request.GET._mutable = True
+
+    @action(detail=False, methods=["GET"], url_path="_refresh_cache")
+    def _refresh_cache(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        for instance in queryset:
+            instance = self.service_class(instance=instance).set_cache()
+        return Response({"message": "Successfully refreshed"})
 
 
 class DestroyMM(RelationalGenericViewSet):
