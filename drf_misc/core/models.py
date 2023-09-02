@@ -32,11 +32,7 @@ class AllInstanceManager(models.Manager):
 
 class OnlyActiveInstanceManager(models.Manager):
     def get_queryset(self):
-        return (
-            super(OnlyActiveInstanceManager, self)
-            .get_queryset()
-            .filter(is_deleted=False)
-        )
+        return super(OnlyActiveInstanceManager, self).get_queryset().filter(is_deleted=False)
 
 
 class SoftDeleteModel(models.Model):

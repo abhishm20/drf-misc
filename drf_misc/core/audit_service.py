@@ -5,12 +5,9 @@ import os
 import time
 
 import boto3
-from django.conf import settings
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from drf_misc.settings import app_settings
-
-app_logger = getattr(settings, "app_logger", None)
 
 
 class AuditService:
@@ -34,13 +31,11 @@ class AuditService:
 
     def _push_to_queue(self, body, request):
         if not app_settings.audit_queue_url:
-            if app_logger:
-                app_logger.exception("Audit SQS is not configured, payload: %s", body)
+            if app_settings.app_logger:
+                app_settings.app_logger.exception("Audit SQS is not configured, payload: %s", body)
             return None
         body["headers"] = {
-            "auth_token": request.META.get("HTTP_AUTHORIZATION")
-            if request
-            else "System",
+            "auth_token": request.META.get("HTTP_AUTHORIZATION") if request else "System",
             "source_ip": request.META.get("REMOTE_ADDR") if request else "System",
             "user_agent": request.META.get("HTTP_USER_AGENT") if request else "System",
         }
@@ -50,14 +45,10 @@ class AuditService:
                 MessageBody=json.dumps(body),
                 MessageGroupId=app_settings.service_name,
             )
-        except Exception as error:
-            if app_logger:
-                app_logger.exception(
-                    "Event push to Audit SQS: payload: %s, error: %s", body, error
-                )
+        except Exception as error:  # pylint: disable=broad-except
+            if app_settings.app_logger:
+                app_settings.app_logger.exception("Event push to Audit SQS: payload: %s, error: %s", body, error)
             return None
-        if app_logger:
-            app_logger.info(
-                "Event push to Audit SQS: payload: %s, response: %s", body, res
-            )
+        if app_settings.app_logger:
+            app_settings.app_logger.info("Event push to Audit SQS: payload: %s, response: %s", body, res)
         return res

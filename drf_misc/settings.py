@@ -4,7 +4,7 @@ from django.conf import settings
 # pylint: disable=invalid-name
 
 temp_app_settings = getattr(settings, "DRF_MISC_SETTINGS", {})
-assert temp_app_settings.get("service_name") != None
+assert temp_app_settings.get("service_name")
 
 
 class AppSettings:
@@ -25,6 +25,10 @@ class AppSettings:
     @property
     def auth_check_disabled_paths(self):
         return temp_app_settings.get("auth_check_disabled_paths", [])
+
+    @property
+    def app_logger(self):
+        return temp_app_settings.get("app_logger")
 
 
 app_settings = AppSettings()

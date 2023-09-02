@@ -11,9 +11,7 @@ from rest_framework.reverse import reverse
 class CustomURIField(serializers.HyperlinkedRelatedField):
     # We define these as class attributes, so we don't need to pass them as arguments.
 
-    def __init__(
-        self, extra_lookup_fields=None, *args, **kwargs
-    ):  # pylint: disable=keyword-arg-before-vararg
+    def __init__(self, extra_lookup_fields=None, *args, **kwargs):  # pylint: disable=keyword-arg-before-vararg
         kwargs.setdefault("source", "*")
         kwargs["read_only"] = True
         self.extra_lookup_fields = extra_lookup_fields
@@ -59,12 +57,8 @@ class FlexFieldsModelSerializer(serializers.ModelSerializer):
         include_field_names = self._get_dynamic_setting(
             kwargs, {"class_property": "include_fields", "kwargs": "fields"}
         )
-        expand_field_names, next_expand_field_names = self._split_levels(
-            expand_field_names
-        )
-        include_field_names, next_include_field_names = self._split_levels(
-            include_field_names
-        )
+        expand_field_names, next_expand_field_names = self._split_levels(expand_field_names)
+        include_field_names, next_include_field_names = self._split_levels(include_field_names)
         self._expandable = self.expandable_fields.keys()
         self.expanded_fields = []
 

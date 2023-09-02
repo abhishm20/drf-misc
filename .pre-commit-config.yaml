@@ -14,8 +14,13 @@ repos:
       - id: trailing-whitespace
       - id: requirements-txt-fixer
 
+  - repo: https://github.com/ambv/black
+    rev: 23.7.0
+    hooks:
+      - id: black
+
   - repo: https://github.com/PyCQA/autoflake
-    rev: v2.0.1
+    rev: v2.2.0
     hooks:
       - id: autoflake
         name: Remove unused variables and imports
@@ -31,7 +36,7 @@ repos:
         files: \.py$
 
   - repo: https://github.com/pycqa/bandit
-    rev: 1.7.4
+    rev: 1.7.5
     hooks:
       - id: bandit
         args: ["-iii", "-ll"]
@@ -46,17 +51,26 @@ repos:
     hooks:
       - id: isort
 
-  - repo: https://github.com/codespell-project/codespell
-    rev: v2.2.2
+  - repo: https://github.com/dhruvmanila/remove-print-statements
+    rev: "v0.5.2"
     hooks:
-      - id: codespell
-        name: codespell
-        description: Checks for common misspellings in text files.
-        entry: codespell --ignore-words ignore-spelling-words.txt
-        language: python
-        types: [text]
+      - id: remove-print-statements
+        args: ["--verbose"]
 
-  - repo: https://github.com/ambv/black
-    rev: 23.1.0
+  - repo: https://github.com/streetsidesoftware/cspell-cli
+    rev: v7.0.1
     hooks:
-      - id: black
+      - id: cspell
+
+  - repo: local
+    hooks:
+      - id: pylint
+        name: pylint
+        entry: pylint
+        language: system
+        types: [python]
+        args: [
+            "-rn", # Only display messages
+            "-sn", # Don't display the score
+            "--rcfile=.pylintrc", # Link to your config file
+          ]

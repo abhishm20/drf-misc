@@ -29,9 +29,7 @@ class UserWiseRateThrottle(UserRateThrottle):
 
         # Adjust if user has special privileges.
         if request.user.throttling_rate:
-            self.num_requests, self.duration = self.parse_rate(
-                request.user.throttling_rate
-            )
+            self.num_requests, self.duration = self.parse_rate(request.user.throttling_rate)
 
         # Drop any requests from the history which have now passed the
         # throttle duration

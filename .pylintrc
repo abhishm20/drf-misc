@@ -35,7 +35,7 @@ extension-pkg-whitelist=
 fail-on=
 
 # Specify a score threshold under which the program will exit with error.
-fail-under=9.5
+fail-under=10
 
 # Interpret the stdin as a python script, whose filename needs to be passed as
 # the module_or_package argument.
@@ -48,12 +48,12 @@ ignore=CVS
 # ignore-list. The regex matches against paths and can be in Posix or Windows
 # format. Because '\' represents the directory delimiter on Windows systems, it
 # can't be used as an escape character.
-ignore-paths=
+ignore-paths=.*migrations.*
 
 # Files or directories matching the regular expression patterns are skipped.
 # The regex matches against base names, not paths. The default value ignores
 # Emacs file locks
-ignore-patterns=^\.#
+ignore-patterns=
 
 # List of module names for which member attributes should not be checked
 # (useful for modules/projects where namespaces are manipulated during runtime
@@ -63,7 +63,7 @@ ignored-modules=
 
 # Python code to execute, usually for sys.path manipulation such as
 # pygtk.require().
-init-hook='from pylint.config import find_pylintrc; import os; import sys; sys.path.append("."); sys.path.append("./venv/lib/python3.8/site-packages");'
+init-hook='from pylint.config import find_pylintrc; import os; import sys; os.environ["DJANGO_SETTINGS_MODULE"]="project.settings"; sys.path.append("."); sys.path.append(os.path.join(os.getcwd(), 'project')); sys.path.append(os.path.join(os.getcwd(), 'project', 'apps'));'
 
 # Use multiple processes to speed up Pylint. Specifying 0 will auto-detect the
 # number of processors available to use, and will cap the count on Windows to
@@ -77,14 +77,14 @@ limit-inference-results=100
 
 # List of plugins (as comma separated values of python module names) to load,
 # usually to register additional checkers.
-load-plugins=
+load-plugins=pylint_django
 
 # Pickle collected data for later comparisons.
 persistent=yes
 
 # Minimum Python version to use for version dependent checks. Will default to
 # the version used to run pylint.
-py-version=3.9
+py-version=3.11
 
 # Discover python modules and packages in the file system subtree.
 recursive=no
@@ -271,7 +271,7 @@ exclude-too-few-public-methods=
 
 # List of qualified class names to ignore when counting class parents (see
 # R0901)
-ignored-parents=
+ignored-parents=too-many-ancestors
 
 # Maximum number of arguments for function / method.
 max-args=5
@@ -304,11 +304,16 @@ max-statements=50
 min-public-methods=2
 
 
+[DJANGO FOREIGN KEYS REFERENCED BY STRINGS]
+
+# A module containing Django settings to be used while linting.
+django-settings-module=project.settings
+
+
 [EXCEPTIONS]
 
 # Exceptions that will emit a warning when caught.
-overgeneral-exceptions=BaseException,
-                       Exception
+overgeneral-exceptions=builtins.BaseException,builtins.Exception
 
 
 [FORMAT]
@@ -327,7 +332,7 @@ indent-after-paren=4
 indent-string='    '
 
 # Maximum number of characters on a single line.
-max-line-length=100
+max-line-length=120
 
 # Maximum number of lines in a module.
 max-module-lines=1000
@@ -408,16 +413,21 @@ confidence=HIGH,
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use "--disable=all --enable=classes
 # --disable=W".
-disable=missing-function-docstring,
+disable=raw-checker-failed,
+        bad-inline-option,
+        locally-disabled,
+        file-ignored,
+        suppressed-message,
+        useless-suppression,
+        deprecated-pragma,
+        use-symbolic-message-instead,
         missing-module-docstring,
         missing-class-docstring,
-        import-outside-toplevel,
-        cyclic-import,
-        unused-argument,
+        missing-function-docstring,
         too-many-ancestors,
-        too-few-public-methods,
-        duplicate-code,
-        attribute-defined-outside-init
+        import-outside-toplevel,
+        duplicate-code
+
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option

@@ -28,9 +28,7 @@ class FlexFieldsMixin:
             if expand == "~all":
                 self._force_expand = self.permit_list_expands
             else:
-                self._force_expand = list(
-                    set(expand.split(",")) & set(self.permit_list_expands)
-                )
+                self._force_expand = list(set(expand.split(",")) & set(self.permit_list_expands))
         if hasattr(super(), "list") and super().list:
             return super().list(request, *args, **kwargs)
         raise BadRequest({"message": "Method not allowed"})
@@ -39,9 +37,7 @@ class FlexFieldsMixin:
         """Dynamically adds properties to serializer_class from request's GET params."""
         expand = None
         fields = None
-        is_valid_request = (
-            hasattr(self, "request") and self.request and self.request.method == "GET"
-        )
+        is_valid_request = hasattr(self, "request") and self.request and self.request.method == "GET"
 
         if not is_valid_request:
             return self.serializer_class
@@ -67,9 +63,7 @@ class FlexFieldsMixin:
         return None
 
 
-class RelationalGenericViewSet(
-    NestedViewSetMixin, FlexFieldsMixin, viewsets.GenericViewSet
-):
+class RelationalGenericViewSet(NestedViewSetMixin, FlexFieldsMixin, viewsets.GenericViewSet):
     filter_backends = (FlexFieldsFilterBackend,)
 
     def get_queryset(self):
@@ -99,9 +93,7 @@ class RelationalGenericViewSet(
     def _refresh_cache(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         for instance in queryset:
-            instance = self.service_class(instance=instance).set_cache(
-                raise_exception=True
-            )
+            instance = self.service_class(instance=instance).set_cache(raise_exception=True)
         return Response({"message": "Successfully refreshed"})
 
 
@@ -133,9 +125,7 @@ class CreateMM(RelationalGenericViewSet):
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return Response(
-            serializer.data, status=status.HTTP_201_CREATED, headers=headers
-        )
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer):
         serializer.save()
@@ -192,15 +182,11 @@ class UpdateMM(RelationalGenericViewSet):
         partial = kwargs.pop("partial", False)
         instance = self.get_object()
         if hasattr(self, "service_class") and self.service_class:
-            instance = self.service_class(instance.id).update(
-                request.data, request=request, partial=partial
-            )
+            instance = self.service_class(instance.id).update(request.data, request=request, partial=partial)
             serializer = self.get_serializer(instance)
         else:
             instance = self.get_object()
-            serializer = self.get_serializer(
-                instance, data=request.data, partial=partial
-            )
+            serializer = self.get_serializer(instance, data=request.data, partial=partial)
             serializer.is_valid(raise_exception=True)
             serializer.save()
         if getattr(instance, "_prefetched_objects_cache", None):

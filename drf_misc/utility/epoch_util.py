@@ -54,15 +54,11 @@ def append_current_time(unix):
 
 
 def sod(unix):
-    return dt_to_unix(
-        unix_to_dt(unix).replace(hour=0, minute=0, second=0, microsecond=0)
-    )
+    return dt_to_unix(unix_to_dt(unix).replace(hour=0, minute=0, second=0, microsecond=0))
 
 
 def eod(unix):
-    return dt_to_unix(
-        unix_to_dt(unix).replace(hour=23, minute=59, second=59, microsecond=999999)
-    )
+    return dt_to_unix(unix_to_dt(unix).replace(hour=23, minute=59, second=59, microsecond=999999))
 
 
 def delta_time(unix, ch_dict):

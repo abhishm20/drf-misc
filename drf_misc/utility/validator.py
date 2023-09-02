@@ -24,9 +24,7 @@ def validate_mobile(value, raise_exception=True, mobile_no_only=True):
 def validate_email(value, raise_exception=True):
     if not value:
         return True
-    match = re.match(
-        r"^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$", value
-    )
+    match = re.match(r"^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$", value)
     if not match:
         if raise_exception:
             raise BadRequest({"message": "Invalid Email."})
@@ -57,9 +55,7 @@ def validate_pan(value):
 def validate_gst(value):
     if not value:
         return True
-    if re.match(
-        r"^[0-9]{2}[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}\d[A-Za-z]{1}[A-Za-z0-9]{1}$", value
-    ):
+    if re.match(r"^[0-9]{2}[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}\d[A-Za-z]{1}[A-Za-z0-9]{1}$", value):
         return True
     raise BadRequest({"message": "Invalid GST."})
 

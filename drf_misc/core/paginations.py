@@ -39,9 +39,7 @@ class Count15Pagination(PageNumberPagination):
             self.first_page = paginator.page(1)
             self.last_page = paginator.page(paginator.num_pages)
         except InvalidPage as exc:
-            msg = self.invalid_page_message.format(
-                page_number=page_number, message=str(exc)
-            )
+            msg = self.invalid_page_message.format(page_number=page_number, message=str(exc))
             raise NotFound(msg)
 
         if paginator.num_pages > 1 and self.template is not None:

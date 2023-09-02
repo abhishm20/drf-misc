@@ -1,0 +1,50 @@
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+  "version": "0.2",
+  "language": "en-US",
+  "dictionaryDefinitions": [
+    {
+      "name": "project-words",
+      "path": "./project-words.txt",
+      "type": "S",
+      "addWords": true
+    },
+    {
+      "name": "requirements-words",
+      "path": "./requirements.txt",
+      "type": "S"
+    },
+    {
+      "name": "common-words",
+      "path": "https://gist.githubusercontent.com/abhishm20/1666a352c0bcaf716e4980698c6158b6/raw",
+      "type": "S"
+    }
+  ],
+  "dictionaries": [
+    "softwareTerms",
+    "en_US",
+    "aws",
+    "python",
+    "project-words",
+    "requirements",
+    "common-words",
+    "flagWords",
+    "misc"
+  ],
+  "ignorePaths": [
+    "**/migrations/",
+    "**/__pycache__/**",
+    "pyproject.toml",
+    ".gitignore",
+    "Pipfile",
+    ".vscode",
+    "**.md",
+    ".github/**",
+    "./requirements.txt",
+    "sonar-project.properties",
+    "docker/**",
+    "Dockerfile",
+    ".pylintrc"
+  ],
+  "caseSensitive": false
+}
