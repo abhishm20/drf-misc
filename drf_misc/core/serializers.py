@@ -61,6 +61,7 @@ class FlexFieldsModelSerializer(serializers.ModelSerializer):
         include_field_names, next_include_field_names = self._split_levels(include_field_names)
         self._expandable = self.expandable_fields.keys()
         self.expanded_fields = []
+        self.kwargs = kwargs
 
         # Instantiate the superclass normally
         super().__init__(*args, **kwargs)
