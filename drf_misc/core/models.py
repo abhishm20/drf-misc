@@ -52,7 +52,7 @@ class SoftDeleteModel(models.Model):
 
 
 class AbstractModel(_DateTimeStampingModel):
-    id = models.CharField(unique=True, primary_key=True, max_length=50)
+    id = models.CharField(editable=False, unique=True, primary_key=True, max_length=50)
 
     class Meta:
         abstract = True
