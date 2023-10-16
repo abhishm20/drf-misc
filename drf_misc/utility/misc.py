@@ -7,7 +7,7 @@ import string
 from collections import OrderedDict
 from itertools import tee
 
-from unidecode import unidecode
+from unidecode import unidecode  # pylint: disable=import-error
 
 
 def generate_password():
@@ -105,13 +105,24 @@ def diff_dict(dict1, dict2):
     return diff
 
 
-def format_amount(number):
-    s = str(number)
-    if len(s) <= 3:
-        return s
+def format_amount(number, decimal_point=0):
+    if decimal_point > 0:
+        amount_string = str(round(float(number), decimal_point))
     else:
-        base_three = s[-3:]
-        remaining = s[:-3]
-        parts = [remaining[i : i + 2] for i in range(0, len(remaining), 2)]
-        parts = parts + [base_three]
-        return ",".join(parts)
+        amount_string = str(int(float(number)))
+    if "." in amount_string:
+        amount_string, decimal_part = amount_string.split(".")
+    else:
+        decimal_part = ""
+    if len(amount_string) <= 3:
+        return "Rs. " + amount_string
+    base_three = amount_string[-3:]
+    remaining = amount_string[:-3]
+    parts = []
+    for i in range(0, len(remaining), 2):
+        if i == 0:
+            parts.append(remaining[-2:])
+        else:
+            parts.append(remaining[-(i + 2) : -i])
+    parts = parts[::-1] + [base_three]
+    return "Rs. " + ",".join(parts) + ("." + decimal_part if decimal_part else "")
