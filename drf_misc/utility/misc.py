@@ -115,7 +115,7 @@ def format_amount(number, decimal_point=0):
     else:
         decimal_part = ""
     if len(amount_string) <= 3:
-        return "Rs. " + amount_string
+        return "Rs. " + amount_string + ("." + decimal_part if decimal_part else "")
     base_three = amount_string[-3:]
     remaining = amount_string[:-3]
     parts = []
