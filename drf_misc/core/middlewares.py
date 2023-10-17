@@ -50,5 +50,10 @@ class AuthCheckMiddleware(MiddlewareMixin):
         valid_data = {}
         if token:
             token = token.replace("Bearer ", "")
-            valid_data = jwt.decode(token, options={"verify_signature": False})
-        request.auth_user = valid_data
+            try:
+                valid_data = jwt.decode(token, options={"verify_signature": False})
+                request.auth_user = valid_data
+            except Exception as error:
+                if app_settings.app_logger:
+                    app_settings.app_logger.exception(error)
+        request.auth_user = {}
