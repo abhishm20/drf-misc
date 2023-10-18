@@ -56,4 +56,6 @@ class AuthCheckMiddleware(MiddlewareMixin):
             except Exception as error:
                 if app_settings.app_logger:
                     app_settings.app_logger.exception(error)
-        request.auth_user = {}
+                request.auth_user = {}
+        else:
+            request.auth_user = {}
