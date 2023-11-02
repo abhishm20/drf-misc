@@ -4,6 +4,7 @@ from __future__ import absolute_import, unicode_literals
 import inspect
 
 import jwt
+from django.http import JsonResponse
 from django.utils.deprecation import MiddlewareMixin
 
 from drf_misc.settings import app_settings
@@ -43,9 +44,13 @@ class AuthTokenHandler(MiddlewareMixin):
 
 class AuthCheckMiddleware(MiddlewareMixin):
     def process_request(self, request):
+        if request.path.startswith("/v1/internal"):
+            return
+
         for path in app_settings.auth_check_disabled_paths:
-            if path in request.build_absolute_uri():
+            if path in request.path:
                 return
+
         token = request.META.get("HTTP_AUTHORIZATION")
         valid_data = {}
         if token:
@@ -56,6 +61,6 @@ class AuthCheckMiddleware(MiddlewareMixin):
             except Exception as error:
                 if app_settings.app_logger:
                     app_settings.app_logger.exception(error)
-                request.auth_user = {}
+                return JsonResponse({"message": "Authentication failed"})
         else:
-            request.auth_user = {}
+            return JsonResponse({"message": "Authentication token not provided"})

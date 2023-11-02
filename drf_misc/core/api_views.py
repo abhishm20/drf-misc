@@ -199,3 +199,26 @@ class UpdateMM(RelationalGenericViewSet):
     def partial_update(self, request, *args, **kwargs):
         kwargs["partial"] = True
         return self.update(request, *args, **kwargs)
+
+
+def filter_queryset_by_auth(queryset, auth_data, is_root, company_programs=None):
+    if auth_data.get("lead_id"):
+        if is_root:
+            queryset = queryset.filter(crm_lead_id=auth_data["lead_id"])
+        else:
+            queryset = queryset.filter(account__crm_lead_id=auth_data["lead_id"])
+    elif auth_data.get("program_id"):
+        if is_root:
+            queryset = queryset.filter(program_id=auth_data["program_id"])
+        else:
+            queryset = queryset.filter(account__program_id=auth_data["program_id"])
+    elif auth_data.get("company_id"):
+        if company_programs:
+            program_ids = [program["id"] for program in company_programs]
+        else:
+            raise BadRequest({"message": "Company programs not found"})
+        if is_root:
+            queryset = queryset.filter(program_id__in=program_ids)
+        else:
+            queryset = queryset.filter(account__program_id__in=program_ids)
+    return queryset

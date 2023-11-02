@@ -14,7 +14,7 @@ from drf_misc.utility.misc import diff_dict
 
 class BaseService:
     serializer = None
-    cache_serializer = None
+    get_cache_data = None
     model = None
     audit_enable = None
     get_entity_data = None
@@ -27,7 +27,7 @@ class BaseService:
             self.instance = instance
 
     def get_cache_key(self):
-        return f"{app_settings.service_name}:" f"{self.instance.__class__.__name__.lower()}:{self.instance.id}"
+        return f"{app_settings.service_name}:{self.instance.__class__.__name__.lower()}:{self.instance.id}"
 
     def create(self, data, request, audit_data=None):
         ser = self.serializer(data=data)
@@ -43,10 +43,11 @@ class BaseService:
         return self.instance
 
     def delete(self, request, audit_data=None):
-        audit_data = self._get_audit_data("deleted", audit_data)
-        if app_settings.use_service_cache and self.cache_serializer:
+        if app_settings.use_service_cache and self.get_cache_data:
             CustomCache(self.get_cache_key()).delete()
+
         if self.audit_enable:
+            audit_data = self._get_audit_data("deleted", audit_data)
             entity = self.get_entity_data()
             AuditService().send_event(entity, self.serializer(self.instance).data, request, audit_data)
         self.instance.delete()
@@ -54,35 +55,39 @@ class BaseService:
     def update(self, data, request, audit_data=None, partial=True):
         if self.update_fields:
             data = {key: value for key, value in data.items() if key in self.update_fields}
-        diff_data = diff_dict(self.serializer(self.instance).data, data)
+
         ser = self.serializer(self.instance, data, partial=partial)
         ser.is_valid(raise_exception=True)
         ser.save()
         self.instance = ser.instance
+
         self.set_cache()
+
         if self.audit_enable:
+            diff_data = diff_dict(self.serializer(self.instance).data, data)
             entity = self.get_entity_data()
             audit_data = self._get_audit_data("updated", audit_data)
             AuditService().send_event(entity, diff_data, request, audit_data)
         return self.instance
 
     def force_update(self, data, request, audit_data=None, partial=True):
-        diff_data = diff_dict(self.serializer(self.instance).data, data)
         ser = self.serializer(self.instance, data, partial=partial)
         ser.is_valid(raise_exception=True)
         ser.save()
         self.instance = ser.instance
-        if app_settings.use_service_cache and self.cache_serializer:
-            CustomCache(self.get_cache_key()).set(self.cache_serializer(self.instance).data)
+
+        self.set_cache()
+
         if self.audit_enable:
+            diff_data = diff_dict(self.serializer(self.instance).data, data)
             entity = self.get_entity_data()
             audit_data = self._get_audit_data("updated", audit_data)
             AuditService().send_event(entity, diff_data, request, audit_data)
         return self.instance
 
     def set_cache(self, raise_exception=False):
-        if app_settings.use_service_cache and self.cache_serializer:
-            CustomCache(self.get_cache_key()).set(self.cache_serializer(self.instance).data)
+        if app_settings.use_service_cache and self.get_cache_data:
+            CustomCache(self.get_cache_key()).set(self.get_cache_data())
         elif raise_exception:
             raise BadRequest({"message": f"Caching is not configured for {self.model.__class__.__name__}"})
 
