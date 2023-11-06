@@ -44,9 +44,6 @@ class AuthTokenHandler(MiddlewareMixin):
 
 class AuthCheckMiddleware(MiddlewareMixin):
     def process_request(self, request):
-        if request.path.startswith("/v1/internal"):
-            return
-
         for path in app_settings.auth_check_disabled_paths:
             if path in request.path:
                 return
@@ -63,4 +60,4 @@ class AuthCheckMiddleware(MiddlewareMixin):
                     app_settings.app_logger.exception(error)
                 return JsonResponse({"message": "Authentication failed"})
         else:
-            return JsonResponse({"message": "Authentication token not provided"})
+            request.auth_user = valid_data
