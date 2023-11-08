@@ -216,7 +216,7 @@ def filter_queryset_by_auth(queryset, auth_data, is_root, company_programs=None)
         if company_programs:
             program_ids = [program["id"] for program in company_programs]
         else:
-            raise BadRequest({"message": "Company programs not found"})
+            program_ids = []
         if is_root:
             queryset = queryset.filter(program_id__in=program_ids)
         else:
