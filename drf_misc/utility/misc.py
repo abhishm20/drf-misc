@@ -7,6 +7,8 @@ import string
 from collections import OrderedDict
 from itertools import tee
 
+from core.api_exceptions import BadRequest
+from settings import app_settings
 from unidecode import unidecode  # pylint: disable=import-error
 
 
@@ -126,3 +128,30 @@ def format_amount(number, decimal_point=0):
             parts.append(remaining[-(i + 2) : -i])
     parts = parts[::-1] + [base_three]
     return "Rs. " + ",".join(parts) + ("." + decimal_part if decimal_part else "")
+
+
+def log_api_call(name, url, method, payload, headers, response, service_name):
+    if app_settings.app_logger:
+        app_settings.info(
+            "API Call Log: %s",
+            {
+                "type": name,
+                "url": url,
+                "method": method,
+                "request": payload,
+                "response": response.text,
+                "headers": headers,
+                "service_name": service_name,
+            },
+        )
+    if response.status_code in range(200, 300):  # pylint:  disable=no-else-return
+        return response.json()
+    elif response.status_code in range(400, 499):
+        raise BadRequest(response.json())
+    raise BadRequest(
+        {
+            "message": "Something went wrong",
+            "description": f"There is problem with {service_name}. We are working hard to fix this issue. Output: {response.text}",
+        },
+        response.status_code,
+    )
