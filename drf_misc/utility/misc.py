@@ -7,9 +7,10 @@ import string
 from collections import OrderedDict
 from itertools import tee
 
-from core.api_exceptions import BadRequest
-from settings import app_settings
 from unidecode import unidecode  # pylint: disable=import-error
+
+from drf_misc.core.api_exceptions import BadRequest
+from drf_misc.settings import app_settings
 
 
 def generate_password():
