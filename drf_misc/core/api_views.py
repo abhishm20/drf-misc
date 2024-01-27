@@ -161,6 +161,27 @@ class ListMM(RelationalGenericViewSet):
         return Response(serializer.data)
 
 
+class InternalMM(RelationalGenericViewSet):
+    @action(detail=False, methods=["PUT"], url_path="bulk/internal", permission_classes=[], authentication_classes=[])
+    def bulk_internal(self, request, *args, **kwargs):
+        if not request.data.get("queries"):
+            raise BadRequest({"message": "Please provide queries."})
+        queries = {}
+        for each in request.data.get("queries", []):
+            if each.get("operator", ""):
+                queries[f"{each.get('field')}__{each['operator']}"] = each.get("value", [])
+            else:
+                queries[f"{each.get('field')}"] = each.get("value", [])
+        queryset = self.model.objects.filter(**queries)
+        serializer = self.serializer_class(
+            queryset,
+            many=True,
+            expand=request.data.get("expand", ""),
+            fields=request.data.get("fields", ""),
+        )
+        return Response(serializer.data)
+
+
 class RetrieveMM(RelationalGenericViewSet):
     """
     Retrieve a model instance.
