@@ -164,15 +164,10 @@ class ListMM(RelationalGenericViewSet):
 class InternalMM(RelationalGenericViewSet):
     @action(detail=False, methods=["PUT"], url_path="bulk/internal", permission_classes=[], authentication_classes=[])
     def bulk_internal(self, request, *args, **kwargs):
-        if not request.data.get("queries"):
-            raise BadRequest({"message": "Please provide queries."})
-        queries = {}
-        for each in request.data.get("queries", []):
-            if each.get("operator", ""):
-                queries[f"{each.get('field')}__{each['operator']}"] = each.get("value", [])
-            else:
-                queries[f"{each.get('field')}"] = each.get("value", [])
-        queryset = self.model.objects.filter(**queries)
+        if request.data.get("ids"):
+            queryset = self.model.objects.filter(id__in=request.data.get("ids"))
+        elif request.data.get("ref_ids"):
+            queryset = self.model.objects.filter(ref_id__in=request.data.get("ref_ids"))
         serializer = self.serializer_class(
             queryset,
             many=True,
