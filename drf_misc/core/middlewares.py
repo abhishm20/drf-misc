@@ -44,10 +44,6 @@ class AuthTokenHandler(MiddlewareMixin):
 
 class AuthCheckMiddleware(MiddlewareMixin):
     def process_request(self, request):
-        for path in app_settings.auth_check_disabled_paths:
-            if path in request.path:
-                return
-
         token = request.META.get("HTTP_AUTHORIZATION")
         valid_data = {}
         if token:
