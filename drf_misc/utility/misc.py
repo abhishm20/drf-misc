@@ -7,6 +7,7 @@ import string
 from collections import OrderedDict
 from itertools import tee
 
+import jwt
 from unidecode import unidecode  # pylint: disable=import-error
 
 from drf_misc.core.api_exceptions import BadRequest
@@ -156,3 +157,12 @@ def log_api_call(name, url, method, payload, headers, response, service_name):
         },
         response.status_code,
     )
+
+
+def decode_jwt(token):
+    try:
+        return True, jwt.decode(token, options={"verify_signature": False})
+    except Exception as error:
+        if app_settings.app_logger:
+            app_settings.app_logger.exception(error)
+        return False, "Authentication failed"
