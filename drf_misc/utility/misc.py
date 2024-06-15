@@ -161,6 +161,7 @@ def log_api_call(name, url, method, payload, headers, response, service_name):
 
 def decode_jwt(token):
     try:
+        token = token.replace("Bearer ", "")
         return True, jwt.decode(token, options={"verify_signature": False})
     except Exception as error:
         if app_settings.app_logger:
@@ -169,4 +170,8 @@ def decode_jwt(token):
 
 
 def get_headers(request):
-    return {"Authorization": request.META.get("HTTP_AUTHORIZATION")}
+    return {
+        "user_agent": request.META.get("HTTP_USER_AGENT", ""),
+        "source_ip": request.META.get("REMOTE_ADDR", ""),
+        "authorization": request.META.get("HTTP_AUTHORIZATION"),
+    }
