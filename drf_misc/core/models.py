@@ -51,8 +51,12 @@ class SoftDeleteModel(models.Model):
         self.save()
 
 
+def generate_id():
+    return str(uuid.uuid4())
+
+
 class AbstractModel(_DateTimeStampingModel):
-    id = models.CharField(unique=True, primary_key=True, max_length=50, default=uuid.uuid4)
+    id = models.CharField(unique=True, primary_key=True, max_length=50, default=generate_id)
 
     class Meta:
         abstract = True
