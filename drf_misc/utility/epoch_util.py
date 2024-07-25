@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
-
 from dateutil.relativedelta import relativedelta
 
+from datetime import datetime, timedelta
 
 def unix_to_dt(unix):
     # uts can be 1686868399 or 1686868399000 (millisecond) or 1686868399.000 or 1686868399000000 (microseconds) [Not supported for now]
@@ -59,6 +58,30 @@ def sod(unix):
 
 def eod(unix):
     return dt_to_unix(unix_to_dt(unix).replace(hour=23, minute=59, second=59, microsecond=999999))
+
+def eow(unix):
+    dt = unix_to_dt(unix)
+    end_of_week = dt + timedelta(days=(6 - dt.weekday()))
+    end_of_week = end_of_week.replace(hour=23, minute=59, second=59, microsecond=999999)
+    return dt_to_unix(end_of_week)
+
+def sow(unix):
+    dt = unix_to_dt(unix)
+    start_of_week = dt - timedelta(days=dt.weekday())
+    start_of_week = start_of_week.replace(hour=0, minute=0, second=0, microsecond=0)
+    return dt_to_unix(start_of_week)
+
+def eom(unix):
+    dt = unix_to_dt(unix)
+    next_month = dt.replace(day=28) + timedelta(days=4)  # this will always get to the next month
+    end_of_month = next_month.replace(day=1, hour=0, minute=0, second=0, microsecond=0) - timedelta(microseconds=1)
+    return dt_to_unix(end_of_month)
+
+
+def som(unix):
+    dt = unix_to_dt(unix)
+    start_of_month = dt.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    return dt_to_unix(start_of_month)
 
 
 def delta_time(unix, ch_dict):
