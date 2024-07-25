@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime, timedelta
 
-from core.api_exceptions import BadRequest
 from dateutil.relativedelta import relativedelta
 
 
@@ -105,7 +104,7 @@ def get_date_array(start, count, asc=True, period="days"):
         elif period == "months":
             date_iter.append((som(temp), eom(temp)))
         else:
-            raise BadRequest({"message": "Invalid period"})
+            raise Exception({"message": "Invalid period"})
         if asc:
             temp = delta_time(temp, {period: 1})
         else:
